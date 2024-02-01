@@ -1,0 +1,219 @@
+* {
+  padding: 0;
+  margin: 0;
+}
+html {
+  width: 100%;
+}
+body {
+  width: 100%;
+  height: fit-content;
+  background-color: BLACK;
+  font-size: 32px;
+  font-family: "Titillium Web", sans-serif;
+}
+p {
+  font-family: "Dosis", sans-serif;
+}
+
+a {
+  text-decoration: none;
+  display: flex;
+  align-items: center;
+}
+
+.glowBox {
+}
+
+#head {
+  width: 100%;
+  height: 120px;
+  box-sizing: border-box;
+  /* the box-sizing property should be inside the box whose border has been set  */
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  position: relative;
+}
+#logo {
+  height: 90px;
+  width: 90px;
+  background-image: url("img/logo.png");
+  background-size: 100px;
+  background-position: center center;
+  background-repeat: no-repeat;
+  mix-blend-mode: difference;
+}
+
+#logoInfo {
+  height: 100%;
+  width: 380px;
+  display: flex;
+  align-items: center;
+}
+
+#websiteName {
+  font-size: 50px;
+  height: 70px;
+  color: white;
+  font-weight: bolder;
+  display: flex;
+  align-items: center;
+  box-sizing: border-box;
+}
+
+#websiteName span {
+  text-shadow: 0px 0 20px rgba(200, 200, 200, 0.5),
+    0px 0 20px rgba(200, 200, 200, 0.5), 0px 0 40px rgba(200, 200, 200, 0.8);
+}
+
+#profile {
+  width: 100px;
+  height: 100px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
+}
+
+#mainBody {
+  width: 100%;
+  height: 550px;
+  position: relative;
+  box-sizing: border-box;
+  top: 50px;
+}
+
+.material-symbols-outlined {
+  font-variation-settings: "FILL" 0, "wght" 400, "GRAD" 0, "opsz" 24;
+  color: white;
+  display: block;
+  font-size: 30px;
+  text-shadow: 0px 0 2px white, 0px 0 10px white, 0px 0 20px white;
+}
+
+#toolBar {
+  height: 500px;
+  width: 60px;
+  margin-left: 10px;
+  position: fixed;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 30px;
+  cursor: pointer;
+}
+
+.toolsContainer {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+}
+
+.tiles {
+  height: 40px;
+  width: 40px;
+  border-radius: 5px;
+}
+
+.red {
+  background-color: rgba(255, 35, 35, 0.79);
+  box-shadow: 0px 0px 15px 3px rgba(255, 55, 55, 0.79);
+}
+
+.orange {
+  background-color: rgba(252, 156, 13, 0.79);
+  box-shadow: 0px 0px 15px 3px rgba(252, 176, 33, 0.79);
+}
+
+.yellow {
+  background-color: rgba(236, 253, 9, 0.872);
+  box-shadow: 0px 0px 15px 3px rgba(236, 273, 29, 0.872);
+}
+
+.green {
+  background-color: rgba(18, 255, 58, 0.79);
+  box-shadow: 0px 0px 15px 3px rgba(18, 275, 78, 0.79);
+}
+
+.blue {
+  background-color: rgba(35, 134, 255, 0.79);
+  box-shadow: 0px 0px 15px 3px rgba(35, 154, 275, 0.79);
+}
+
+.indigo {
+  background-color: rgba(42, 35, 255, 0.79);
+  box-shadow: 0px 0px 15px 3px rgba(42, 55, 275, 0.79);
+}
+
+.violet {
+  background-color: rgba(255, 35, 171, 0.79);
+  box-shadow: 0px 0px 15px 3px rgba(255, 55, 171, 0.79);
+}
+.add {
+  box-sizing: border-box;
+  background-color: transparent;
+  box-shadow: 0px 0px 15px 3px gray, inset 0px 0px 15px 3px gray;
+  border: 5px solid white;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+#notesBody {
+  box-sizing: border-box;
+  width: 100%;
+  height: 100%;
+}
+
+#notes {
+  width: 90%;
+  position: absolute;
+  right: 50px;
+  display: flex;
+  gap: 20px;
+  right: 1%;
+  top: 10px;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-content: flex-start;
+  /* this left styling is to make sure that the notesbody does not overlap with toolbar */
+}
+
+.note {
+  cursor: pointer;
+  width: 250px;
+  height: 250px;
+  border-radius: 10px;
+  position: relative;
+  display: flex;
+  align-content: center;
+}
+
+.data {
+  width: 100%;
+  height: 100%;
+  position: relative;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: center;
+  padding: 5px 20px 20px 20px;
+}
+
+.heading {
+  width: 100%;
+  font-size: 0.9em;
+  font-weight: bolder;
+  color: white;
+}
+
+.description {
+  width: 100%;
+  height: 400px;
+  font-size: 0.6em;
+  color: white;
+  overflow: hidden;
+}

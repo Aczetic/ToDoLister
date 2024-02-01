@@ -1,0 +1,91 @@
+<!-- TODO: update the height of the mainbody element when ever the height of its notesbody child changes, as both of its children are fixed and absolute  -->
+<!-- /* 
+the height of a child cannot be more than the parent if the increase is to be made in the flex direction
+which means the flex-direction : row will not allow width to increase. but it can be bypassed when content is there
+overflowing in the child but if again with content overflow:hidden is used then it will go back inside the parent */ -->
+<!-- TODO: show the date and time of when the card was created -->
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>ToDoLister</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Titillium+Web:ital,wght@0,200;0,300;0,400;0,600;0,700;1,200;1,300&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link rel="icon" href="img/logo.png" />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Dosis:wght@200;300;400;500&family=Titillium+Web:ital,wght@0,200;0,300;0,400;0,600;0,700;1,200;1,300&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200"
+    />
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <div id="head">
+      <div id="logoInfo">
+        <a href="/"
+          ><div id="logo"></div>
+          <div id="websiteName"><span>TODOLISTER</span></div></a
+        >
+      </div>
+      <div id="profile">
+        <div class="material-symbols-outlined" style="font-size: 80px">
+          account_circle
+        </div>
+      </div>
+    </div>
+    <div id="mainBody">
+      <div id="toolBar">
+        <div class="toolsContainer" style="margin-top: 10px">
+          <div class="material-symbols-outlined" style="font-size: 35px">
+            add
+          </div>
+          <div class="material-symbols-outlined">delete</div>
+        </div>
+        <div class="toolsContainer">
+          <div class="tiles red"></div>
+          <div class="tiles orange"></div>
+          <div class="tiles yellow"></div>
+          <div class="tiles green"></div>
+          <div class="tiles blue"></div>
+          <div class="tiles indigo"></div>
+          <div class="tiles violet"></div>
+        </div>
+      </div>
+      <div id="notesBody" >
+        <div id="notes">
+          <div class="note red">
+            <div class="data">
+              <p class="heading">This is heading</p>
+              <p class="description">
+                Lorem ipsum dolor sit amet consectetur adipisicing elit. Quos id
+                nemo enim minima voluptatibus, nobis quam vero deserunt labore
+                at, fugiat dolor non dolores quisquam, aperiam hic quo! Vel
+                necessitatibus porro delectus repellendus id quam consequatur.
+                Vel similique non officia eos dignissimos ratione, excepturi
+                sunt assumenda quo nisi, optio dolorem?
+              </p>
+            </div>
+          </div>
+          <div class="note blue"></div>
+          <div class="note green"></div>
+          <div class="note orange"></div>
+          <div class="note indigo"></div>
+          <div class="note violet"></div>
+          <div class="note yellow"></div>
+          <div class="note blue"></div>
+          <div class="note add"><div class = 'material-symbols-outlined' style = 'font-size: 50px;'>add</div>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>
