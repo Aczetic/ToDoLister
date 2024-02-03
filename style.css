@@ -1,6 +1,7 @@
 * {
   padding: 0;
   margin: 0;
+  user-select: none;
 }
 html {
   width: 100%;
@@ -74,6 +75,13 @@ a {
   justify-content: center;
   align-items: center;
   cursor: pointer;
+  transform: scale(1);
+  user-select: none;
+  transition: 0.1s;
+}
+
+#profile:hover ~ .material-symbols-outlined {
+  color: blue;
 }
 
 #mainBody {
@@ -90,6 +98,8 @@ a {
   display: block;
   font-size: 30px;
   text-shadow: 0px 0 2px white, 0px 0 10px white, 0px 0 20px white;
+  transform: scale(1);
+  transition: 0.2s;
 }
 
 #toolBar {
@@ -115,6 +125,8 @@ a {
   height: 40px;
   width: 40px;
   border-radius: 5px;
+  transform: scale(1);
+  transition: 0.2s;
 }
 
 .red {
@@ -189,6 +201,14 @@ a {
   position: relative;
   display: flex;
   align-content: center;
+  transform: scale(1);
+  transition: 0.2s;
+}
+
+.note:active,
+.tiles:active,
+.toolsContainer .material-symbols-outlined:active {
+  transform: scale(0.95);
 }
 
 .data {
