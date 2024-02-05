@@ -47,7 +47,7 @@ overflowing in the child but if again with content overflow:hidden is used then 
     <div id="mainBody">
       <div id="toolBar">
         <div class="toolsContainer" style="margin-top: 10px">
-          <div class="material-symbols-outlined" style="font-size: 35px">
+          <div onclick = 'createNote()' class="material-symbols-outlined" style="font-size: 35px">
             add
           </div>
           <div class="material-symbols-outlined">delete</div>
@@ -65,8 +65,12 @@ overflowing in the child but if again with content overflow:hidden is used then 
       <div id="notesBody" >
         <div id = 'formToCreateNote'>
             <div id = 'closeButton'><div class = 'material-symbols-outlined' onclick = 'closeClicked("formToCreateNote")'>close</div> </div>
+            <h2>Create New Note</h2>
+            <form>
             <input id = 'title' type = 'text' maxlength = '50' placeholder = 'Type the title here...(50 Words max)'>
             <textarea maxlength = 500 id = 'noteData' placeholder = "Enter the descrption here...(500 words max)"></textarea>
+            <div id = 'publish' onclick = "setValues()"><div class = 'material-symbols-outlined' style = 'font-size:1.1em'>publish</div><input type = 'reset' value = 'PUBLISH' for = 'notes'></div>
+            </form>
         </div>
         <div id="notes">
           <div class="note red">
@@ -89,7 +93,7 @@ overflowing in the child but if again with content overflow:hidden is used then 
           <div class="note violet"></div>
           <div class="note yellow"></div>
           <div class="note blue"></div>
-          <div class="note add"><div class = 'material-symbols-outlined' style = 'font-size: 50px;' onclick = 'createNote()'>add</div>
+          <div class="note add" onclick = 'createNote()'><div class = 'material-symbols-outlined' style = 'font-size: 50px;' >add</div>
         </div>
       </div>
     </div>

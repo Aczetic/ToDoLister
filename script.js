@@ -22,3 +22,5 @@ function closeClicked(id) {
 function createNote() {
   document.getElementById("formToCreateNote").style.transform = "scale(1)";
 }
+
+function setValues() {}

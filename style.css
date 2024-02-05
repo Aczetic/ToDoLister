@@ -194,12 +194,93 @@ a {
   border-radius: 20px;
   display: flex;
   flex-direction: column;
-  justify-content: space-around;
+  justify-content: space-between;
   align-items: center;
   box-sizing: border-box;
   padding: 20px 0;
   transform: scale(1);
   transition: 0.3s;
+  text-shadow: 0px 0 2px white, 0px 0 10px rgba(255, 255, 255, 0.5),
+    0px 0 20px rgba(255, 255, 255, 0.8);
+
+  h2 {
+    color: white;
+  }
+  form {
+    width: 100%;
+    height: 98%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: space-around;
+    gap: 10px;
+  }
+
+  form #publish {
+    width: 90%;
+    height: 50px;
+    border: 2px solid white;
+    border-radius: 15px;
+    color: white;
+    padding-left: 15px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    transform: scale(1);
+    transition: 0.2s;
+    cursor: pointer;
+  }
+  form #publish:active {
+    transform: scale(0.95);
+  }
+  form #publish input {
+    font-size: 1em;
+    background: transparent;
+    color: white;
+    font-weight: bolder;
+    font-family: "Titillium Web";
+    border: none;
+    outline: none;
+    text-shadow: 0px 0 2px white, 0px 0 10px rgba(255, 255, 255, 0.5),
+      0px 0 20px rgba(255, 255, 255, 0.8);
+  }
+
+  #title {
+    border: 2px solid white;
+    border-radius: 15px;
+    width: 90%;
+    height: 10%;
+    backdrop-filter: blur(10px);
+    background: transparent;
+    color: white;
+    outline: none;
+    font-family: "Titillium Web";
+    font-size: 1.1rem;
+    padding: 0 0 0 15px;
+  }
+
+  #title::placeholder,
+  #noteData::placeholder {
+    color: white;
+    font-family: "Titillium Web";
+    font-size: 1.1rem;
+  }
+
+  #noteData {
+    width: 90%;
+    height: 80%;
+    background: transparent;
+    border: 2px solid white;
+    border-radius: 15px;
+    backdrop-filter: blur(10px);
+    padding: 0 15px;
+    outline: none;
+    font-size: 1.1rem;
+    color: white;
+    padding: 0 0 0 15px;
+    font-family: "Titillium Web";
+    resize: none;
+  }
 }
 
 #closeButton {
@@ -218,41 +299,6 @@ a {
 
 #closeButton .material-symbols-outlined {
   font-size: 1.1em;
-}
-
-#formToCreateNote #title {
-  border: 2px solid white;
-  border-radius: 15px;
-  width: 90%;
-  height: 10%;
-  backdrop-filter: blur(10px);
-  background: transparent;
-  color: white;
-  outline: none;
-  font-family: "Titillium Web";
-  font-size: 1.1rem;
-  padding: 0 0 0 15px;
-}
-#formToCreateNote #title::placeholder,
-#formToCreateNote #noteData::placeholder {
-  color: white;
-  font-family: "Titillium Web";
-  font-size: 1.1rem;
-}
-
-#formToCreateNote #noteData {
-  width: 90%;
-  height: 80%;
-  background: transparent;
-  border: 2px solid white;
-  border-radius: 15px;
-  backdrop-filter: blur(10px);
-  padding: 0 15px;
-  outline: none;
-  font-size: 1.1rem;
-  color: white;
-  padding: 0 0 0 15px;
-  font-family: "Titillium Web";
 }
 
 #notes {
