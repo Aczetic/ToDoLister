@@ -80,8 +80,8 @@ a {
   transition: 0.1s;
 }
 
-#profile:hover ~ .material-symbols-outlined {
-  color: blue;
+#profile:hover .material-symbols-outlined {
+  text-shadow: 0px 0 5px white, 0px 0 20px white, 0px 0 30px white;
 }
 
 #mainBody {
@@ -177,6 +177,82 @@ a {
   box-sizing: border-box;
   width: 100%;
   height: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+#formToCreateNote {
+  position: fixed;
+  top: calc(50% - 300px);
+  height: 600px;
+  width: 80%;
+  border: 2px solid white;
+  backdrop-filter: blur(20px);
+  background-color: rgba(0, 0, 0, 0.2);
+  z-index: 10;
+  border-radius: 20px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-around;
+  align-items: center;
+  box-sizing: border-box;
+  padding: 20px 0;
+  transform: scale(1);
+  transition: 0.3s;
+}
+
+#closeButton {
+  transform: scale(1);
+  transition: 0.2s;
+  position: absolute;
+  width: 50px;
+  height: 50px;
+  align-self: flex-end;
+  top: 0;
+  cursor: pointer;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+#closeButton .material-symbols-outlined {
+  font-size: 1.1em;
+}
+
+#formToCreateNote #title {
+  border: 2px solid white;
+  border-radius: 15px;
+  width: 90%;
+  height: 10%;
+  backdrop-filter: blur(10px);
+  background: transparent;
+  color: white;
+  outline: none;
+  font-family: "Titillium Web";
+  font-size: 1.1rem;
+  padding: 0 0 0 15px;
+}
+#formToCreateNote #title::placeholder,
+#formToCreateNote #noteData::placeholder {
+  color: white;
+  font-family: "Titillium Web";
+  font-size: 1.1rem;
+}
+
+#formToCreateNote #noteData {
+  width: 90%;
+  height: 80%;
+  background: transparent;
+  border: 2px solid white;
+  border-radius: 15px;
+  backdrop-filter: blur(10px);
+  padding: 0 15px;
+  outline: none;
+  font-size: 1.1rem;
+  color: white;
+  padding: 0 0 0 15px;
+  font-family: "Titillium Web";
 }
 
 #notes {
@@ -207,7 +283,8 @@ a {
 
 .note:active,
 .tiles:active,
-.toolsContainer .material-symbols-outlined:active {
+.toolsContainer .material-symbols-outlined:active,
+#closeButton:active {
   transform: scale(0.95);
 }
 

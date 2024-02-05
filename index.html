@@ -4,6 +4,7 @@ the height of a child cannot be more than the parent if the increase is to be ma
 which means the flex-direction : row will not allow width to increase. but it can be bypassed when content is there
 overflowing in the child but if again with content overflow:hidden is used then it will go back inside the parent */ -->
 <!-- TODO: show the date and time of when the card was created -->
+<!-- TODO: when publish button is clicked then input should get cleared or reset -->
 <!DOCTYPE html>
 <html lang="en">
   <head>
@@ -62,6 +63,11 @@ overflowing in the child but if again with content overflow:hidden is used then 
         </div>
       </div>
       <div id="notesBody" >
+        <div id = 'formToCreateNote'>
+            <div id = 'closeButton'><div class = 'material-symbols-outlined' onclick = 'closeClicked("formToCreateNote")'>close</div> </div>
+            <input id = 'title' type = 'text' maxlength = '50' placeholder = 'Type the title here...(50 Words max)'>
+            <textarea maxlength = 500 id = 'noteData' placeholder = "Enter the descrption here...(500 words max)"></textarea>
+        </div>
         <div id="notes">
           <div class="note red">
             <div class="data">
@@ -83,9 +89,10 @@ overflowing in the child but if again with content overflow:hidden is used then 
           <div class="note violet"></div>
           <div class="note yellow"></div>
           <div class="note blue"></div>
-          <div class="note add"><div class = 'material-symbols-outlined' style = 'font-size: 50px;'>add</div>
+          <div class="note add"><div class = 'material-symbols-outlined' style = 'font-size: 50px;' onclick = 'createNote()'>add</div>
         </div>
       </div>
     </div>
+    <script lang = 'javascript' src = 'script.js'></script>
   </body>
 </html>
