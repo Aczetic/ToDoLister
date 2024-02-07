@@ -12,6 +12,7 @@ body {
   background-color: BLACK;
   font-size: 32px;
   font-family: "Titillium Web", sans-serif;
+  overflow-x: hidden;
 }
 p {
   font-family: "Dosis", sans-serif;
@@ -127,7 +128,7 @@ a {
 #toolBar {
   height: 500px;
   width: 60px;
-  margin-left: 10px;
+  left: 10px;
   position: fixed;
   display: flex;
   flex-direction: column;
@@ -197,8 +198,10 @@ a {
 
 #notesBody {
   box-sizing: border-box;
-  width: 100%;
+  width: 90%;
   height: 100%;
+  right: 0;
+  position: absolute;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -324,12 +327,10 @@ a {
 }
 
 #notes {
-  width: 91.5%;
+  width: 95%;
   position: absolute;
-  right: 50px;
   display: flex;
   gap: 20px;
-  right: 1%;
   top: 10px;
   flex-wrap: wrap;
   justify-content: flex-start;
