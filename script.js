@@ -4,16 +4,8 @@
 // TODO: elipsses should be shown in the card if the text goes out of the container in both title and description
 // TODO: the current alert creation is wrong because it uses the same element for displaying errors instead of differnt ones being created and appended
 // TODO : use a different form to show selected notes and different form to add notes or use a draft variable in session storage
-// let objs = document.getElementsByClassName("note");
-// for (let elem in objs) {
-//   objs[elem].addEventListener("click", (event) => {
-//     if (event.target.className.indexOf("note") != -1) {
-//       console.log("true");
-//     } else {
-//       console.log("false");
-//     }
-//   });
-// }
+// TODO : now the notes should be created by tallying data from draft when publishing and note reading from html
+// as that will be more sequential and easy to follow through
 
 let notesObject = {
     // this is a global variable which whill store all the current notes
@@ -24,8 +16,8 @@ let notesObject = {
       dateTime: [],
     },
   },
-  selectedNote = undefined; // to store the selected note either for editing or deleting.
-
+  selectedNote = undefined, // to store the selected note either for editing or deleting.
+  selectedColor = undefined; // to store the current selected color
 // when the body loads if there already some pre-created notes then create them first
 document.addEventListener("DOMContentLoaded", () => {
   if (window.sessionStorage.getItem("notesObject") != null) {
@@ -45,9 +37,24 @@ let isNoteCreateDialogueBoxOpen = false;
 function closeClicked(id) {
   let elem = document.getElementById(id);
   elem.style.transform = "scale(0)";
+  // some default actions
   if (selectedNote != undefined) {
+    console.log("hereinsdie");
     document.querySelector("form").reset(); // reset the form if the selectNote option was the last action;
     selectedNote = undefined;
+    selectedColor = undefined;
+  } else {
+    let title = elem.querySelector("#title").value;
+    let description = elem.querySelector("#noteData").value;
+    if (Boolean(title) || Boolean(description)) {
+      let backgroundColor = elem.style.backgroundColor;
+      let draft = {
+        title: title,
+        description: description,
+        backgroundColor: backgroundColor,
+      };
+      window.sessionStorage.setItem("draft", JSON.stringify(draft));
+    }
   }
 }
 setAlertBoxToOriginalPosition = undefined; // this variable holdes the reference to the setTimeout function
@@ -90,9 +97,25 @@ function createNote() {
   noteFormElem.querySelector("#publish").style.display = "flex";
   noteFormElem.querySelector("input").removeAttribute("disabled");
   noteFormElem.querySelector("textArea").removeAttribute("disabled");
-}
 
-let selectedColor = undefined;
+  // if there is any data in draft then set it in form already to show the earlier work instead of destroying it
+  let draft = JSON.parse(window.sessionStorage.getItem("draft"));
+  if (draft != null) {
+    console.log("enetered");
+    noteFormElem.querySelector("#title").value = Boolean(draft.title)
+      ? draft.title
+      : null;
+    noteFormElem.querySelector("#noteData").value = Boolean(draft.description)
+      ? draft.description
+      : null;
+    noteFormElem.style.backgroundColor = Boolean(draft.backgroundColor)
+      ? draft.backgroundColor
+      : "rgba(0, 0, 0, 0.2)";
+  } else {
+    noteFormElem.style.backgroundColor = "rgba(0, 0, 0, 0.2)";
+    document.querySelector("form").reset();
+  }
+}
 
 function setColor(elem) {
   selectedColor = elem.getAttribute("class");
@@ -165,6 +188,8 @@ function publishNote() {
   notesObject.notes.color.push(selectedColor);
   notesObject.notes.dateTime.push(dateTime);
   window.sessionStorage.setItem("notesObject", JSON.stringify(notesObject));
+  // also clear the draft which was only to help publish the note
+  window.sessionStorage.removeItem("draft");
 
   createAlert("Note successfully added", "success");
   // reset the form after the note has been published;
