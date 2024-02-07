@@ -52,13 +52,32 @@ function createAlert(message, messageType, isAlertPromptType = false) {
 
 function createNote() {
   // bring the dialogue box up
-  document.querySelector("#noteForm").style.transform = "scale(1)";
+  let noteFormElem = document.querySelector("#noteForm");
+  noteFormElem.style.transform = "scale(1)";
   // set the heading text
-  document.querySelector("#noteForm").querySelector("h2").innerText =
-    "Create A New Note";
+  noteFormElem.querySelector("h2").innerText = "Create A New Note";
 }
 
-let selectedColor = null;
+let selectedColor = undefined;
+
+function setColor(event) {
+  selectedColor = event.target.getAttribute("class");
+  selectedColor = selectedColor.substr(
+    selectedColor.indexOf("tiles") + "tiles".length + 1
+  );
+  backgroundColors = {
+    red: "rgba(255,0,0,0.5)",
+    orange: "rgba(252, 156, 13, 0.2)",
+    yellow: "rgba(236, 253, 9, 0.2)",
+    green: "rgba(18, 255, 58, 0.2)",
+    blue: "rgba(35, 134, 255, 0.2)",
+    indigo: "rgba(42, 35, 255, 0.2)",
+    violet: "rgba(255, 35, 171, 0.2)",
+  };
+  document.querySelector("#noteForm").style.backgroundColor =
+    backgroundColors[selectedColor];
+}
+
 function publishNote() {
   // check if the inputs are not empty if empty then alert and let the dialogue box open
   //  close the dialogue box
@@ -75,13 +94,36 @@ function publishNote() {
   } else if (Boolean(noteData) === false) {
     createAlert("Description is empty!", "error");
     return;
+  } else if (selectedColor === undefined) {
+    createAlert("Please select a color for your note!", "error");
+    return;
   }
   let newNote = document.createElement("div");
-  newNote.setAttribute("class", "note");
+  newNote.setAttribute("class", `note ${selectedColor}`);
+  newNote.appendChild(document.createElement("div"));
+  let data = newNote.querySelector("div");
+  data.setAttribute("class", "data");
+  let notedata = ` <p class="heading">${title}</p>
+  <p class="description">
+    ${noteData}
+  </p>`;
+  data.innerHTML = notedata;
+  document
+    .querySelector("#notes")
+    .insertBefore(newNote, document.querySelector(".add"));
+
+  console.log(selectedColor);
 
   createAlert("Note successfully added", "success");
   // reset the form after the note has been published;
   document.querySelector("form").reset();
+  // set the selectedColor to undefined again
+  selectedColor = undefined;
+  // bring form to orginal color which was changed by selectedColor
+  document.querySelector("#noteForm").style.backgroundColor =
+    "rgba(0, 0, 0, 0.2)";
+  //close the form
+  closeClicked("noteForm");
 }
 
 let isDeleteNoteActive = 0;

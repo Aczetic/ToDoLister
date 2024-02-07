@@ -56,13 +56,13 @@ overflowing in the child but if again with content overflow:hidden is used then 
           <div class = 'material-symbols-outlined'>edit</div>
         </div>
         <div class="toolsContainer">
-          <div class="tiles red"></div>
-          <div class="tiles orange"></div>
-          <div class="tiles yellow"></div>
-          <div class="tiles green"></div>
-          <div class="tiles blue"></div>
-          <div class="tiles indigo"></div>
-          <div class="tiles violet"></div>
+          <div class="tiles red" onclick = 'setColor(event)'></div>
+          <div class="tiles orange" onclick = 'setColor(event)'></div>
+          <div class="tiles yellow" onclick = 'setColor(event)'></div>
+          <div class="tiles green" onclick = 'setColor(event)'></div>
+          <div class="tiles blue" onclick = 'setColor(event)'></div>
+          <div class="tiles indigo" onclick = 'setColor(event)'></div>
+          <div class="tiles violet" onclick = 'setColor(event)'></div>
         </div>
       </div>
       <div id="notesBody" >
@@ -77,19 +77,6 @@ overflowing in the child but if again with content overflow:hidden is used then 
             </form>
         </div>
         <div id="notes">
-          <div class="note red">
-            <div class="data">
-              <p class="heading">This is heading</p>
-              <p class="description">
-                Lorem ipsum dolor sit amet consectetur adipisicing elit. Quos id
-                nemo enim minima voluptatibus, nobis quam vero deserunt labore
-                at, fugiat dolor non dolores quisquam, aperiam hic quo! Vel
-                necessitatibus porro delectus repellendus id quam consequatur.
-                Vel similique non officia eos dignissimos ratione, excepturi
-                sunt assumenda quo nisi, optio dolorem?
-              </p>
-            </div>
-          </div>
           <div class="note add" onclick = 'createNote()'><div class = 'material-symbols-outlined' style = 'font-size: 50px;' >add</div>
         </div>
       </div>
