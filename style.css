@@ -84,6 +84,28 @@ a {
   text-shadow: 0px 0 5px white, 0px 0 20px white, 0px 0 30px white;
 }
 
+#alertBox {
+  width: 70%;
+  height: fit-content;
+  border: 3px solid white;
+  left: calc(50% - 35vw);
+  top: 50px;
+  top: -100px;
+  border-radius: 10px;
+  position: fixed;
+  color: white;
+  backdrop-filter: blur(20px);
+  background-color: rgba(0, 0, 0, 0.6);
+  box-sizing: border-box;
+  padding: 10px;
+  z-index: 20;
+  font-size: 1.3rem;
+  font-weight: bold;
+  transition: 0.5s;
+  transition-property: top;
+  text-align: center;
+}
+
 #mainBody {
   width: 100%;
   height: 550px;
@@ -182,7 +204,7 @@ a {
   align-items: center;
 }
 
-#formToCreateNote {
+#noteForm {
   position: fixed;
   top: calc(50% - 300px);
   height: 600px;
@@ -198,7 +220,7 @@ a {
   align-items: center;
   box-sizing: border-box;
   padding: 20px 0;
-  transform: scale(1);
+  transform: scale(0);
   transition: 0.3s;
   text-shadow: 0px 0 2px white, 0px 0 10px rgba(255, 255, 255, 0.5),
     0px 0 20px rgba(255, 255, 255, 0.8);
@@ -233,7 +255,7 @@ a {
   form #publish:active {
     transform: scale(0.95);
   }
-  form #publish input {
+  form #publish #publishButton {
     font-size: 1em;
     background: transparent;
     color: white;
@@ -310,7 +332,7 @@ a {
   right: 1%;
   top: 10px;
   flex-wrap: wrap;
-  justify-content: center;
+  justify-content: flex-start;
   align-content: flex-start;
   /* this left styling is to make sure that the notesbody does not overlap with toolbar */
 }

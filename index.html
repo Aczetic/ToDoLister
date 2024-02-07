@@ -5,6 +5,7 @@ which means the flex-direction : row will not allow width to increase. but it ca
 overflowing in the child but if again with content overflow:hidden is used then it will go back inside the parent */ -->
 <!-- TODO: show the date and time of when the card was created -->
 <!-- TODO: when publish button is clicked then input should get cleared or reset -->
+<!-- TODO: the ability to edit the note later along with changing the color -->
 <!DOCTYPE html>
 <html lang="en">
   <head>
@@ -44,6 +45,7 @@ overflowing in the child but if again with content overflow:hidden is used then 
         </div>
       </div>
     </div>
+    <div id = 'alertBox'>Lorem, ipsum dolor sit amet consectetur adipisicing elit. Laborum omnis facilis deserunt, saepe officiis maxime suscipit? Ipsum ut repellendus odio.</div>
     <div id="mainBody">
       <div id="toolBar">
         <div class="toolsContainer" style="margin-top: 10px">
@@ -51,6 +53,7 @@ overflowing in the child but if again with content overflow:hidden is used then 
             add
           </div>
           <div class="material-symbols-outlined">delete</div>
+          <div class = 'material-symbols-outlined'>edit</div>
         </div>
         <div class="toolsContainer">
           <div class="tiles red"></div>
@@ -63,13 +66,14 @@ overflowing in the child but if again with content overflow:hidden is used then 
         </div>
       </div>
       <div id="notesBody" >
-        <div id = 'formToCreateNote'>
-            <div id = 'closeButton'><div class = 'material-symbols-outlined' onclick = 'closeClicked("formToCreateNote")'>close</div> </div>
+        <div id = 'noteForm'>
+            <div id = 'closeButton'><div class = 'material-symbols-outlined' onclick = 'closeClicked("noteForm")'>close</div> </div>
             <h2>Create New Note</h2>
             <form>
-            <input id = 'title' type = 'text' maxlength = '50' placeholder = 'Type the title here...(50 Words max)'>
-            <textarea maxlength = 500 id = 'noteData' placeholder = "Enter the descrption here...(500 words max)"></textarea>
-            <div id = 'publish' onclick = "setValues()"><div class = 'material-symbols-outlined' style = 'font-size:1.1em'>publish</div><input type = 'reset' value = 'PUBLISH' for = 'notes'></div>
+            <input id = 'title' type = 'text' maxlength = '50' minlength = '10' 
+            placeholder = 'Type the title here...(50 Words max)'>
+            <textarea maxlength = 500 id = 'noteData' placeholder = "Enter the descrption here...(500 words max)" ></textarea>
+            <div id = 'publish' onclick = "publishNote(event)"><div class = 'material-symbols-outlined' style = 'font-size:1.1em'>publish</div><div id = 'publishButton'>PUBLISH</div></div>
             </form>
         </div>
         <div id="notes">
@@ -86,13 +90,6 @@ overflowing in the child but if again with content overflow:hidden is used then 
               </p>
             </div>
           </div>
-          <div class="note blue"></div>
-          <div class="note green"></div>
-          <div class="note orange"></div>
-          <div class="note indigo"></div>
-          <div class="note violet"></div>
-          <div class="note yellow"></div>
-          <div class="note blue"></div>
           <div class="note add" onclick = 'createNote()'><div class = 'material-symbols-outlined' style = 'font-size: 50px;' >add</div>
         </div>
       </div>
