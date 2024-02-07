@@ -1,9 +1,9 @@
 // TODO:when the add card is clicked following things need to be done:
 //     title and description elements to be created and inserted inside another created data element
 //     the background color is to be set to the background color of its parent
-// TODO: elipsses should be shown in the card if the text goes out of the container
+// TODO: elipsses should be shown in the card if the text goes out of the container in both title and description
 // TODO: the current alert creation is wrong because it uses the same element for displaying errors instead of differnt ones being created and appended
-
+// TODO : use a different form to show selected notes and different form to add notes or use a draft variable in session storage
 // let objs = document.getElementsByClassName("note");
 // for (let elem in objs) {
 //   objs[elem].addEventListener("click", (event) => {
@@ -15,10 +15,40 @@
 //   });
 // }
 
+let notesObject = {
+    // this is a global variable which whill store all the current notes
+    notes: {
+      title: [],
+      description: [],
+      color: [],
+      dateTime: [],
+    },
+  },
+  selectedNote = undefined; // to store the selected note either for editing or deleting.
+
+// when the body loads if there already some pre-created notes then create them first
+document.addEventListener("DOMContentLoaded", () => {
+  if (window.sessionStorage.getItem("notesObject") != null) {
+    notesObject = JSON.parse(window.sessionStorage.getItem("notesObject"));
+    for (let i = 0; i < notesObject.notes.title.length; i++) {
+      addNoteToHTML(
+        notesObject.notes.title[i],
+        notesObject.notes.description[i],
+        notesObject.notes.color[i],
+        notesObject.notes.dateTime[i]
+      );
+    }
+  }
+});
+
 let isNoteCreateDialogueBoxOpen = false;
 function closeClicked(id) {
   let elem = document.getElementById(id);
   elem.style.transform = "scale(0)";
+  if (selectedNote != undefined) {
+    document.querySelector("form").reset(); // reset the form if the selectNote option was the last action;
+    selectedNote = undefined;
+  }
 }
 setAlertBoxToOriginalPosition = undefined; // this variable holdes the reference to the setTimeout function
 // USE : the setTimeout invokes after 2 seconds but when another alert is created the previous one should be cleared
@@ -55,16 +85,17 @@ function createNote() {
   let noteFormElem = document.querySelector("#noteForm");
   noteFormElem.style.transform = "scale(1)";
   // set the heading text
-  noteFormElem.querySelector("h2").innerText = "Create A New Note";
+  noteFormElem.querySelector("h2").style.display = "initial";
+  noteFormElem.querySelector("h2").innerText = "Create A New Note"; // these 3 need to be done because these styles were removed when note is selected
+  noteFormElem.querySelector("#publish").style.display = "flex";
+  noteFormElem.querySelector("input").removeAttribute("disabled");
+  noteFormElem.querySelector("textArea").removeAttribute("disabled");
 }
 
 let selectedColor = undefined;
 
-function setColor(event) {
-  selectedColor = event.target.getAttribute("class");
-  selectedColor = selectedColor.substr(
-    selectedColor.indexOf("tiles") + "tiles".length + 1
-  );
+function setColor(elem) {
+  selectedColor = elem.getAttribute("class");
   backgroundColors = {
     red: "rgba(255,0,0,0.5)",
     orange: "rgba(252, 156, 13, 0.2)",
@@ -74,45 +105,66 @@ function setColor(event) {
     indigo: "rgba(42, 35, 255, 0.2)",
     violet: "rgba(255, 35, 171, 0.2)",
   };
+  if (selectedColor.indexOf("tiles") !== -1) {
+    selectedColor = selectedColor.substr(
+      selectedColor.indexOf("tiles") + "tiles".length + 1
+    );
+  } else {
+    selectedColor = elem.getAttribute("class").substring(5);
+  }
   document.querySelector("#noteForm").style.backgroundColor =
     backgroundColors[selectedColor];
 }
 
+function addNoteToHTML(title, description, color, dateTime) {
+  //this function creates the note cards and appends them in html document
+  let newNote = document.createElement("div");
+  newNote.setAttribute("class", `note ${color}`);
+  newNote.addEventListener("click", selectNote);
+  newNote.appendChild(document.createElement("div"));
+  let data = newNote.querySelector("div");
+  data.setAttribute("class", "data");
+  let notedata = ` <p class="heading">${title}</p>
+  <p class="description">
+    ${description}
+  </p><p class="noteDate">${dateTime}</p>`;
+  data.innerHTML = notedata;
+  document
+    .querySelector("#notes")
+    .insertBefore(newNote, document.querySelector(".add"));
+}
+
 function publishNote() {
   // check if the inputs are not empty if empty then alert and let the dialogue box open
-  //  close the dialogue box
+  //getTime of creation
+  let dateTime = String(new Date()).substring(4, 23);
   // get title info
   let title = document.querySelector("#noteForm").querySelector("#title").value;
   // get note data
-  let noteData = document
+  let description = document
     .querySelector("#noteForm")
     .querySelector("#noteData").value;
   //error checking
   if (Boolean(title) === false) {
     createAlert("Title is empty!", "error");
     return;
-  } else if (Boolean(noteData) === false) {
+  } else if (Boolean(description) === false) {
     createAlert("Description is empty!", "error");
     return;
   } else if (selectedColor === undefined) {
     createAlert("Please select a color for your note!", "error");
     return;
   }
-  let newNote = document.createElement("div");
-  newNote.setAttribute("class", `note ${selectedColor}`);
-  newNote.appendChild(document.createElement("div"));
-  let data = newNote.querySelector("div");
-  data.setAttribute("class", "data");
-  let notedata = ` <p class="heading">${title}</p>
-  <p class="description">
-    ${noteData}
-  </p>`;
-  data.innerHTML = notedata;
-  document
-    .querySelector("#notes")
-    .insertBefore(newNote, document.querySelector(".add"));
 
-  console.log(selectedColor);
+  //create the html for the note card
+  addNoteToHTML(title, description, selectedColor, dateTime);
+
+  // set the values in the session storage for now
+  notesObject.notes.title.push(title);
+  notesObject.notes.description.push(description);
+  notesObject.notes.color.push(selectedColor);
+  notesObject.notes.dateTime.push(dateTime);
+  window.sessionStorage.setItem("notesObject", JSON.stringify(notesObject));
 
   createAlert("Note successfully added", "success");
   // reset the form after the note has been published;
@@ -126,7 +178,31 @@ function publishNote() {
   closeClicked("noteForm");
 }
 
-let isDeleteNoteActive = 0;
 function deleteNote(event) {
   // first show the message in an alert box
+}
+
+function selectNote(event) {
+  // let index = Array.from(document.querySelector("#notes").children).indexOf(
+  //   document.querySelector(`.`)
+
+  selectedNote = event.target;
+  while (selectedNote.className != "data") {
+    selectedNote = selectedNote.parentNode;
+  }
+  let index = notesObject.notes.dateTime.indexOf(
+    selectedNote.querySelector(".noteDate").innerText
+  );
+  // bring the dialogue box up
+  let noteFormElem = document.querySelector("#noteForm");
+  noteFormElem.style.transform = "scale(1)";
+  // set the heading to invisible
+  noteFormElem.querySelector("h2").style.display = "none";
+  noteFormElem.querySelector("input").value = notesObject.notes.title[index];
+  noteFormElem.querySelector("input").setAttribute("disabled", "disabled");
+  noteFormElem.querySelector("textArea").value =
+    notesObject.notes.description[index];
+  noteFormElem.querySelector("textArea").setAttribute("disabled", "disabled");
+  noteFormElem.querySelector("#publish").style.display = "none";
+  setColor(selectedNote.parentNode);
 }

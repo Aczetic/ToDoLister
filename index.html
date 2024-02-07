@@ -45,42 +45,80 @@ overflowing in the child but if again with content overflow:hidden is used then 
         </div>
       </div>
     </div>
-    <div id = 'alertBox'>Lorem, ipsum dolor sit amet consectetur adipisicing elit. Laborum omnis facilis deserunt, saepe officiis maxime suscipit? Ipsum ut repellendus odio.</div>
+    <div id="alertBox"></div>
     <div id="mainBody">
       <div id="toolBar">
         <div class="toolsContainer" style="margin-top: 10px">
-          <div onclick = 'createNote()' class="material-symbols-outlined" style="font-size: 35px">
+          <div
+            onclick="createNote()"
+            class="material-symbols-outlined"
+            style="font-size: 35px"
+          >
             add
           </div>
           <div class="material-symbols-outlined">delete</div>
-          <div class = 'material-symbols-outlined'>edit</div>
+          <div class="material-symbols-outlined">edit</div>
         </div>
         <div class="toolsContainer">
-          <div class="tiles red" onclick = 'setColor(event)'></div>
-          <div class="tiles orange" onclick = 'setColor(event)'></div>
-          <div class="tiles yellow" onclick = 'setColor(event)'></div>
-          <div class="tiles green" onclick = 'setColor(event)'></div>
-          <div class="tiles blue" onclick = 'setColor(event)'></div>
-          <div class="tiles indigo" onclick = 'setColor(event)'></div>
-          <div class="tiles violet" onclick = 'setColor(event)'></div>
+          <div class="tiles red" onclick="setColor(event.target)"></div>
+          <div class="tiles orange" onclick="setColor(event.target)"></div>
+          <div class="tiles yellow" onclick="setColor(event.target)"></div>
+          <div class="tiles green" onclick="setColor(event.target)"></div>
+          <div class="tiles blue" onclick="setColor(event.target)"></div>
+          <div class="tiles indigo" onclick="setColor(event.target)"></div>
+          <div class="tiles violet" onclick="setColor(event.target)"></div>
         </div>
       </div>
-      <div id="notesBody" >
-        <div id = 'noteForm'>
-            <div id = 'closeButton'><div class = 'material-symbols-outlined' onclick = 'closeClicked("noteForm")'>close</div> </div>
-            <h2>Create New Note</h2>
-            <form>
-            <input id = 'title' type = 'text' maxlength = '50' minlength = '10' 
-            placeholder = 'Type the title here...(50 Words max)'>
-            <textarea maxlength = 500 id = 'noteData' placeholder = "Enter the descrption here...(500 words max)" ></textarea>
-            <div id = 'publish' onclick = "publishNote(event)"><div class = 'material-symbols-outlined' style = 'font-size:1.1em'>publish</div><div id = 'publishButton'>PUBLISH</div></div>
-            </form>
-        </div>
+      <div id="notesBody">
         <div id="notes">
-          <div class="note add" onclick = 'createNote()'><div class = 'material-symbols-outlined' style = 'font-size: 50px;' >add</div>
+          <div class="note orange">
+            <div class="data">
+              <p class="heading">This is test note</p>
+              <p class="description">
+                This is the description of the test note
+              </p>
+              <p class="noteDate">20th march 2024</p>
+            </div>
+          </div>
+          <div class="note add" onclick="createNote()">
+            <div class="material-symbols-outlined" style="font-size: 50px">
+              add
+            </div>
+          </div>
         </div>
+      </div>
+      <div id="noteForm">
+        <div id="closeButton">
+          <div
+            class="material-symbols-outlined"
+            onclick='closeClicked("noteForm")'
+          >
+            close
+          </div>
+        </div>
+        <h2>Create New Note</h2>
+        <form>
+          <input
+            id="title"
+            type="text"
+            maxlength="50"
+            minlength="10"
+            placeholder="Type the title here...(50 Words max)"
+          />
+          <textarea
+            maxlength="500"
+            id="noteData"
+            placeholder="Enter the descrption here...(500 words max)"
+          ></textarea>
+          <div id="publish" onclick="publishNote(event)">
+            <div class="material-symbols-outlined" style="font-size: 1.1em">
+              publish
+            </div>
+            <div id="publishButton">PUBLISH</div>
+          </div>
+        </form>
       </div>
     </div>
-    <script lang = 'javascript' src = 'script.js'></script>
+    <script lang="javascript" src="script.js"></script>
   </body>
 </html>
