@@ -112,7 +112,7 @@ a {
   height: 550px;
   position: relative;
   box-sizing: border-box;
-  top: 50px;
+  /* top: 50px; */
 }
 
 .material-symbols-outlined {

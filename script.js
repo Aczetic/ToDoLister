@@ -6,6 +6,7 @@
 // TODO : use a different form to show selected notes and different form to add notes or use a draft variable in session storage
 // TODO : now the notes should be created by tallying data from draft when publishing and note reading from html
 // as that will be more sequential and easy to follow through
+// TODO: the color should be saved in draft even if it is not selected then also an empty value should be there or undefined
 
 let notesObject = {
     // this is a global variable which whill store all the current notes
@@ -17,7 +18,17 @@ let notesObject = {
     },
   },
   selectedNote = undefined, // to store the selected note either for editing or deleting.
-  selectedColor = undefined; // to store the current selected color
+  selectedColor = undefined, // to store the current selected color
+  backgroundColors = {
+    red: "rgba(255,0,0,0.5)",
+    orange: "rgba(252, 156, 13, 0.2)",
+    yellow: "rgba(236, 253, 9, 0.2)",
+    green: "rgba(18, 255, 58, 0.2)",
+    blue: "rgba(35, 134, 255, 0.2)",
+    indigo: "rgba(42, 35, 255, 0.2)",
+    violet: "rgba(255, 35, 171, 0.2)",
+  };
+
 // when the body loads if there already some pre-created notes then create them first
 document.addEventListener("DOMContentLoaded", () => {
   if (window.sessionStorage.getItem("notesObject") != null) {
@@ -34,6 +45,7 @@ document.addEventListener("DOMContentLoaded", () => {
 });
 
 let isNoteCreateDialogueBoxOpen = false;
+
 function closeClicked(id) {
   let elem = document.getElementById(id);
   elem.style.transform = "scale(0)";
@@ -42,7 +54,6 @@ function closeClicked(id) {
     console.log("hereinsdie");
     document.querySelector("form").reset(); // reset the form if the selectNote option was the last action;
     selectedNote = undefined;
-    selectedColor = undefined;
   } else {
     let title = elem.querySelector("#title").value;
     let description = elem.querySelector("#noteData").value;
@@ -51,7 +62,9 @@ function closeClicked(id) {
       let draft = {
         title: title,
         description: description,
-        backgroundColor: backgroundColor,
+        backgroundColor: Object.keys(backgroundColors).find(
+          (color) => backgroundColors[color] === backgroundColor
+        ),
       };
       window.sessionStorage.setItem("draft", JSON.stringify(draft));
     }
@@ -101,6 +114,7 @@ function createNote() {
   // if there is any data in draft then set it in form already to show the earlier work instead of destroying it
   let draft = JSON.parse(window.sessionStorage.getItem("draft"));
   if (draft != null) {
+    // if the draft exists then get any available data from it
     console.log("enetered");
     noteFormElem.querySelector("#title").value = Boolean(draft.title)
       ? draft.title
@@ -109,25 +123,22 @@ function createNote() {
       ? draft.description
       : null;
     noteFormElem.style.backgroundColor = Boolean(draft.backgroundColor)
-      ? draft.backgroundColor
+      ? backgroundColors[draft.backgroundColor]
       : "rgba(0, 0, 0, 0.2)";
+    console.log("overhear");
+    selectedColor = Boolean(draft.backgroundColor)
+      ? draft.backgroundColor // here the name of the class is required that is they key and not its value
+      : undefined;
   } else {
+    // use some default values otherwise
     noteFormElem.style.backgroundColor = "rgba(0, 0, 0, 0.2)";
+    selectedColor = undefined;
     document.querySelector("form").reset();
   }
 }
 
 function setColor(elem) {
   selectedColor = elem.getAttribute("class");
-  backgroundColors = {
-    red: "rgba(255,0,0,0.5)",
-    orange: "rgba(252, 156, 13, 0.2)",
-    yellow: "rgba(236, 253, 9, 0.2)",
-    green: "rgba(18, 255, 58, 0.2)",
-    blue: "rgba(35, 134, 255, 0.2)",
-    indigo: "rgba(42, 35, 255, 0.2)",
-    violet: "rgba(255, 35, 171, 0.2)",
-  };
   if (selectedColor.indexOf("tiles") !== -1) {
     selectedColor = selectedColor.substr(
       selectedColor.indexOf("tiles") + "tiles".length + 1
@@ -141,6 +152,7 @@ function setColor(elem) {
 
 function addNoteToHTML(title, description, color, dateTime) {
   //this function creates the note cards and appends them in html document
+  console.log(color);
   let newNote = document.createElement("div");
   newNote.setAttribute("class", `note ${color}`);
   newNote.addEventListener("click", selectNote);
@@ -180,6 +192,7 @@ function publishNote() {
   }
 
   //create the html for the note card
+
   addNoteToHTML(title, description, selectedColor, dateTime);
 
   // set the values in the session storage for now
@@ -193,12 +206,7 @@ function publishNote() {
 
   createAlert("Note successfully added", "success");
   // reset the form after the note has been published;
-  document.querySelector("form").reset();
-  // set the selectedColor to undefined again
-  selectedColor = undefined;
-  // bring form to orginal color which was changed by selectedColor
-  document.querySelector("#noteForm").style.backgroundColor =
-    "rgba(0, 0, 0, 0.2)";
+  formReset();
   //close the form
   closeClicked("noteForm");
 }
@@ -230,4 +238,12 @@ function selectNote(event) {
   noteFormElem.querySelector("textArea").setAttribute("disabled", "disabled");
   noteFormElem.querySelector("#publish").style.display = "none";
   setColor(selectedNote.parentNode);
+}
+
+function formReset() {
+  let formElem = document.querySelector("#noteForm");
+  formElem.querySelector("form").reset();
+  formElem.style.backgroundColor = "rgba(0, 0, 0, 0.2)";
+  selectedColor = undefined;
+  window.sessionStorage.removeItem("draft");
 }
