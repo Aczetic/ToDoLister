@@ -1,13 +1,9 @@
-// TODO:when the add card is clicked following things need to be done:
-//     title and description elements to be created and inserted inside another created data element
-//     the background color is to be set to the background color of its parent
 // TODO: elipsses should be shown in the card if the text goes out of the container in both title and description
 // TODO: the current alert creation is wrong because it uses the same element for displaying errors instead of differnt ones being created and appended
-// TODO : use a different form to show selected notes and different form to add notes or use a draft variable in session storage
 // TODO : now the notes should be created by tallying data from draft when publishing and note reading from html
 // as that will be more sequential and easy to follow through
 // TODO: the color should be saved in draft even if it is not selected then also an empty value should be there or undefined
-
+// TOOD: currently when the note is clicked it's date value is taken and then index is found which is not a secure way it should find the index of the element
 let notesObject = {
     // this is a global variable which whill store all the current notes
     notes: {
@@ -152,16 +148,16 @@ function setColor(elem) {
 
 function addNoteToHTML(title, description, color, dateTime) {
   //this function creates the note cards and appends them in html document
-  console.log(color);
+  let augmentedDescription = description.substring(0, 195) + "..."; // if the description overflows the card then show ellipses
   let newNote = document.createElement("div");
-  newNote.setAttribute("class", `note ${color}`);
+  newNote.setAttribute("class", `note ${color}`); // set the color of card
   newNote.addEventListener("click", selectNote);
   newNote.appendChild(document.createElement("div"));
   let data = newNote.querySelector("div");
   data.setAttribute("class", "data");
   let notedata = ` <p class="heading">${title}</p>
   <p class="description">
-    ${description}
+    ${augmentedDescription}
   </p><p class="noteDate">${dateTime}</p>`;
   data.innerHTML = notedata;
   document
@@ -247,3 +243,4 @@ function formReset() {
   selectedColor = undefined;
   window.sessionStorage.removeItem("draft");
 }
+// 265 is the maximum number of characters that should be visible in a note card.
