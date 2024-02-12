@@ -14,8 +14,10 @@ let notesObject = {
     },
   },
   selectedNote = undefined, // to store the selected note either for editing or deleting.
-  selectedColor = undefined, // to store the current selected color
-  backgroundColors = {
+  selectedNoteIndex = -1; // to store the index of the selected note
+(selectedColor = undefined), // to store the current selected color
+  (alertBoxAnswer = undefined),
+  (backgroundColors = {
     red: "rgba(255,0,0,0.5)",
     orange: "rgba(252, 156, 13, 0.2)",
     yellow: "rgba(236, 253, 9, 0.2)",
@@ -23,7 +25,7 @@ let notesObject = {
     blue: "rgba(35, 134, 255, 0.2)",
     indigo: "rgba(42, 35, 255, 0.2)",
     violet: "rgba(255, 35, 171, 0.2)",
-  };
+  });
 
 // when the body loads if there already some pre-created notes then create them first
 document.addEventListener("DOMContentLoaded", () => {
@@ -47,9 +49,9 @@ function closeClicked(id) {
   elem.style.transform = "scale(0)";
   // some default actions
   if (selectedNote != undefined) {
-    console.log("hereinsdie");
     document.querySelector("form").reset(); // reset the form if the selectNote option was the last action;
     selectedNote = undefined;
+    selectedNoteIndex = -1;
   } else {
     let title = elem.querySelector("#title").value;
     let description = elem.querySelector("#noteData").value;
@@ -68,31 +70,63 @@ function closeClicked(id) {
 }
 setAlertBoxToOriginalPosition = undefined; // this variable holdes the reference to the setTimeout function
 // USE : the setTimeout invokes after 2 seconds but when another alert is created the previous one should be cleared
-function createAlert(message, messageType, isAlertPromptType = false) {
-  if (isAlertPromptType === false) {
-    //first clear the previous call of setTimeout
+function createAlert(message, messageType) {
+  // clear the previous call of setTimeout
 
-    if (Boolean(setAlertBoxToOriginalPosition))
-      clearTimeout(setAlertBoxToOriginalPosition);
+  if (Boolean(setAlertBoxToOriginalPosition))
+    clearTimeout(setAlertBoxToOriginalPosition);
 
-    // if it does not has optional buttons
-    let elem = document.querySelector("#alertBox");
-    let colors = {
-      error: "rgba(255,60,60,0.5)", // red
-      warning: "rgba(255, 255, 0,0.5)", //yellow
-      message: "rgba(60,60,200,0.5)", //blue
-      success: "rgba(60,200,60,0.5)", //green
-    };
-    elem.innerText = message; // set the message
-    elem.style.border = "3px solid " + colors[messageType]; // set the border color
-    elem.style.backgroundColor = colors[messageType]; // set the text color
-    elem.style.top = "50px"; // bring the message box down
+  let alertElem = document.querySelector("#alertBox"); // select the alert box alertElement
+  let colors = {
+    error: "rgba(255,60,60,0.5)", // red
+    warning: "rgba(255, 255, 0,0.5)", //yellow
+    message: "rgba(60,60,200,0.5)", //blue
+    success: "rgba(60,200,60,0.5)", //green
+    confirmation: "rgba(80,80,80,0.5)", //whitish
+  };
+  // bring the alert box down
+  alertElem.style.border = "3px solid " + colors[messageType]; // set the border color
+  alertElem.style.backgroundColor = colors[messageType]; // set the text color
+  alertElem.style.top = "50px"; // bring the message box down
 
-    setAlertBoxToOriginalPosition = setTimeout(() => {
-      // call an async function to put back the alert box to its original position
-      elem.style.top = "-100px";
-      setAlertBoxToOriginalPosition = undefined;
-    }, 2000);
+  if (messageType !== "confirmation") {
+    alertElem.innerText = message; // set the message
+
+    setAlertBoxToOriginalPosition = setTimeout(
+      () => {
+        // call an async function to put back the alert box to its original position
+        alertElem.style.top = "-100px";
+        setAlertBoxToOriginalPosition = undefined;
+      },
+      2000 // change the timing of alertbox based what type of alert message it is
+    );
+  } else {
+    // if the alert type needs a confirmation then
+    document.querySelector("#controlBlocker").style.display = "block"; // bring the viewblocker up
+    let markup = `<div id='alertMessage'>${message}</div><div id='alertBoxOptions'><div class='material-symbols-outlined'>done</div><div class='material-symbols-outlined'>close</div>`;
+    alertElem.innerHTML = markup;
+    alertBoxAnswer = undefined;
+    alertElem
+      .querySelector("#alertBoxOptions")
+      .querySelectorAll("div")[0]
+      .addEventListener("click", () => {
+        (alertBoxAnswer = true), deleteNote();
+        document.querySelector("#controlBlocker").style.display = "none";
+        // put the alert box back to its original position
+        alertElem.style.top = "-100px";
+        setAlertBoxToOriginalPosition = undefined;
+      });
+    alertElem
+      .querySelector("#alertBoxOptions")
+      .querySelectorAll("div")[1]
+      .addEventListener("click", () => {
+        alertBoxAnswer = false;
+        deleteNote();
+        document.querySelector("#controlBlocker").style.display = "none";
+        // put the alert box back to its original position
+        alertElem.style.top = "-100px";
+        setAlertBoxToOriginalPosition = undefined;
+      });
   }
 }
 
@@ -148,7 +182,10 @@ function setColor(elem) {
 
 function addNoteToHTML(title, description, color, dateTime) {
   //this function creates the note cards and appends them in html document
-  let augmentedDescription = description.substring(0, 195) + "..."; // if the description overflows the card then show ellipses
+  let augmentedDescription =
+    description.length > 192
+      ? description.substring(0, 192) + ".....<b>see more</b>"
+      : description; // if the description overflows the card then show ellipses
   let newNote = document.createElement("div");
   newNote.setAttribute("class", `note ${color}`); // set the color of card
   newNote.addEventListener("click", selectNote);
@@ -207,10 +244,6 @@ function publishNote() {
   closeClicked("noteForm");
 }
 
-function deleteNote(event) {
-  // first show the message in an alert box
-}
-
 function selectNote(event) {
   // let index = Array.from(document.querySelector("#notes").children).indexOf(
   //   document.querySelector(`.`)
@@ -222,6 +255,7 @@ function selectNote(event) {
   let index = notesObject.notes.dateTime.indexOf(
     selectedNote.querySelector(".noteDate").innerText
   );
+  selectedNoteIndex = index; // set the value to the global variable as well
   // bring the dialogue box up
   let noteFormElem = document.querySelector("#noteForm");
   noteFormElem.style.transform = "scale(1)";
@@ -236,11 +270,47 @@ function selectNote(event) {
   setColor(selectedNote.parentNode);
 }
 
+function deleteNote() {
+  if (selectedNote == undefined) {
+    createAlert("Please select a note to delete", "error");
+  } else {
+    let confirmedToDelete = alertBoxAnswer;
+    if (confirmedToDelete == undefined) {
+      createAlert("Are you sure you want to delete this note?", "confirmation");
+    } else if (confirmedToDelete) {
+      console.log("deleted");
+      let elem = document
+        .querySelector("#notesBody")
+        .querySelector("#notes")
+        .querySelectorAll(".note")[selectedNoteIndex + 1];
+      console.log(elem);
+      document.getElementById("notes").removeChild(elem);
+      setTimeout(() => createAlert("Note deleted", "success"), 400);
+      // clearing the session storage
+      notesObject.notes.title.splice(selectedNoteIndex, 1);
+      notesObject.notes.description.splice(selectedNoteIndex, 1);
+      notesObject.notes.dateTime.splice(selectedNoteIndex, 1);
+      notesObject.notes.color.splice(selectedNoteIndex, 1);
+      window.sessionStorage.setItem("notesObject", JSON.stringify(notesObject));
+      closeClicked("noteForm"); // close the form after that
+    } else {
+      console.log("deletion rejected");
+      setTimeout(() => createAlert("Note deletion rejected", "message"), 400);
+    }
+    alertBoxAnswer = undefined;
+  }
+}
+
 function formReset() {
-  let formElem = document.querySelector("#noteForm");
-  formElem.querySelector("form").reset();
-  formElem.style.backgroundColor = "rgba(0, 0, 0, 0.2)";
-  selectedColor = undefined;
-  window.sessionStorage.removeItem("draft");
+  if (selectedNote == undefined) {
+    // reset the note only when there is no note selected
+    let formElem = document.querySelector("#noteForm");
+    formElem.querySelector("form").reset();
+    formElem.style.backgroundColor = "rgba(0, 0, 0, 0.2)";
+    selectedColor = undefined;
+    window.sessionStorage.removeItem("draft");
+  } else {
+    createAlert("Invalid action", "error");
+  }
 }
 // 265 is the maximum number of characters that should be visible in a note card.

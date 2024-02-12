@@ -94,6 +94,7 @@ a {
   top: -100px;
   border-radius: 10px;
   position: fixed;
+  z-index: 25;
   color: white;
   backdrop-filter: blur(20px);
   background-color: rgba(0, 0, 0, 0.6);
@@ -104,7 +105,39 @@ a {
   font-weight: bold;
   transition: 0.5s;
   transition-property: top;
-  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+#alertBoxOptions {
+  display: flex;
+  width: fit-content;
+  position: relative;
+  gap: 50px;
+  cursor: pointer;
+}
+#alertBoxOptions {
+  div {
+    font-size: 2.1rem;
+    border-radius: 50px;
+    background-color: transparent;
+    transform: scale(1);
+    transition: 0.2s;
+  }
+  div:active {
+    transform: scale(0.8);
+  }
+  div:nth-of-type(1) {
+    color: rgb(9, 227, 9);
+    text-shadow: 0px 0 2px rgb(8, 184, 8), 0px 0 10px rgb(8, 184, 8),
+      0px 0 20px rgb(8, 184, 8);
+  }
+  div:nth-of-type(2) {
+    color: red;
+    text-shadow: 0px 0 2px red, 0px 0 10px red, 0px 0 20px red;
+  }
 }
 
 #mainBody {
@@ -391,4 +424,14 @@ a {
   align-self: flex-end;
   position: absolute;
   bottom: 10px;
+}
+
+#controlBlocker {
+  position: fixed;
+  background-color: transparent;
+  height: 100%;
+  width: 100%;
+  top: 0;
+  z-index: 20;
+  display: none;
 }

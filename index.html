@@ -32,6 +32,7 @@ overflowing in the child but if again with content overflow:hidden is used then 
     <link rel="stylesheet" href="style.css" />
   </head>
   <body>
+    
     <div id="head">
       <div id="logoInfo">
         <a href="/"
@@ -45,7 +46,10 @@ overflowing in the child but if again with content overflow:hidden is used then 
         </div>
       </div>
     </div>
-    <div id="alertBox"></div>
+    
+      
+      </div>
+    </div>
     <div id="mainBody">
       <div id="toolBar">
         <div class="toolsContainer" style="margin-top: 10px">
@@ -56,8 +60,8 @@ overflowing in the child but if again with content overflow:hidden is used then 
           >
             add
           </div>
-          <div class="material-symbols-outlined">delete</div>
-          <div class="material-symbols-outlined">edit</div>
+          <div class="material-symbols-outlined" onclick="deleteNote()">delete</div>
+          <div class="material-symbols-outlined" >edit</div>
           <div class="material-symbols-outlined" onClick="formReset()">
             restart_alt
           </div>
@@ -122,6 +126,8 @@ overflowing in the child but if again with content overflow:hidden is used then 
         </form>
       </div>
     </div>
+    <div id = 'controlBlocker'></div>
+    <div id="alertBox" ></div>
     <script lang="javascript" src="script.js"></script>
   </body>
 </html>
