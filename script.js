@@ -367,7 +367,7 @@ function updateNote() {
   let notedata = ` <p class="heading">${title}</p>
   <p class="description">
     ${augmentedDescription}
-  </p><p class="noteDate">${dateTime}</p>`;
+  </p><p class = 'editedTextLabel'><b>Edited</b></p><p class="noteDate">${dateTime}</p>`;
 
   document
     .querySelectorAll(".note")

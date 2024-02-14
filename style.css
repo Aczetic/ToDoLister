@@ -421,12 +421,16 @@ a {
   color: white;
   overflow: hidden;
 }
-.noteDate {
+.noteDate,
+.editedTextLabel {
   font-size: 1rem;
   color: white;
   align-self: flex-end;
   position: absolute;
   bottom: 10px;
+}
+.editedTextLabel {
+  align-self: flex-start;
 }
 
 #controlBlocker {
