@@ -4,6 +4,7 @@
 // as that will be more sequential and easy to follow through
 // TODO: the color should be saved in draft even if it is not selected then also an empty value should be there or undefined
 // TOOD: currently when the note is clicked it's date value is taken and then index is found which is not a secure way it should find the index of the element
+// PROBLEM : edited can't be shown in noteDate element as it obstructs the functioning of selectnote
 let notesObject = {
     // this is a global variable which whill store all the current notes
     notes: {
@@ -18,7 +19,7 @@ let notesObject = {
 (selectedColor = undefined), // to store the current selected color
   (alertBoxAnswer = undefined),
   (backgroundColors = {
-    red: "rgba(255,0,0,0.5)",
+    red: "rgba(255, 0, 0, 0.5)",
     orange: "rgba(252, 156, 13, 0.2)",
     yellow: "rgba(236, 253, 9, 0.2)",
     green: "rgba(18, 255, 58, 0.2)",
@@ -49,6 +50,20 @@ function closeClicked(id) {
   elem.style.transform = "scale(0)";
   // some default actions
   if (selectedNote != undefined) {
+    let title = elem.querySelector("#title").value;
+    let description = elem.querySelector("#noteData").value;
+    if (Boolean(title) || Boolean(description)) {
+      let backgroundColor = elem.style.backgroundColor;
+      let draft = {
+        title: title,
+        description: description,
+        selectedNoteIndex: selectedNoteIndex,
+        backgroundColor: Object.keys(backgroundColors).find(
+          (color) => backgroundColors[color] === backgroundColor
+        ),
+      };
+      window.sessionStorage.setItem("updateDraft", JSON.stringify(draft));
+    }
     document.querySelector("form").reset(); // reset the form if the selectNote option was the last action;
     selectedNote = undefined;
     selectedNoteIndex = -1;
@@ -134,10 +149,12 @@ function createNote() {
   // bring the dialogue box up
   let noteFormElem = document.querySelector("#noteForm");
   noteFormElem.style.transform = "scale(1)";
+
   // set the heading text
   noteFormElem.querySelector("h2").style.display = "initial";
   noteFormElem.querySelector("h2").innerText = "Create A New Note"; // these 3 need to be done because these styles were removed when note is selected
   noteFormElem.querySelector("#publish").style.display = "flex";
+  noteFormElem.querySelector("#update").style.display = "none";
   noteFormElem.querySelector("input").removeAttribute("disabled");
   noteFormElem.querySelector("textArea").removeAttribute("disabled");
 
@@ -145,7 +162,7 @@ function createNote() {
   let draft = JSON.parse(window.sessionStorage.getItem("draft"));
   if (draft != null) {
     // if the draft exists then get any available data from it
-    console.log("enetered");
+
     noteFormElem.querySelector("#title").value = Boolean(draft.title)
       ? draft.title
       : null;
@@ -155,7 +172,7 @@ function createNote() {
     noteFormElem.style.backgroundColor = Boolean(draft.backgroundColor)
       ? backgroundColors[draft.backgroundColor]
       : "rgba(0, 0, 0, 0.2)";
-    console.log("overhear");
+
     selectedColor = Boolean(draft.backgroundColor)
       ? draft.backgroundColor // here the name of the class is required that is they key and not its value
       : undefined;
@@ -168,6 +185,7 @@ function createNote() {
 }
 
 function setColor(elem) {
+  // set the color of the form only when a note has not been selected
   selectedColor = elem.getAttribute("class");
   if (selectedColor.indexOf("tiles") !== -1) {
     selectedColor = selectedColor.substr(
@@ -178,6 +196,9 @@ function setColor(elem) {
   }
   document.querySelector("#noteForm").style.backgroundColor =
     backgroundColors[selectedColor];
+
+  // otherwise create alert stating invalid action
+  //  createAlert("Invalid action", "error");
 }
 
 function addNoteToHTML(title, description, color, dateTime) {
@@ -267,6 +288,7 @@ function selectNote(event) {
     notesObject.notes.description[index];
   noteFormElem.querySelector("textArea").setAttribute("disabled", "disabled");
   noteFormElem.querySelector("#publish").style.display = "none";
+  noteFormElem.querySelector("#update").style.display = "none";
   setColor(selectedNote.parentNode);
 }
 
@@ -283,7 +305,7 @@ function deleteNote() {
         .querySelector("#notesBody")
         .querySelector("#notes")
         .querySelectorAll(".note")[selectedNoteIndex + 1];
-      console.log(elem);
+
       document.getElementById("notes").removeChild(elem);
       setTimeout(() => createAlert("Note deleted", "success"), 400);
       // clearing the session storage
@@ -293,6 +315,7 @@ function deleteNote() {
       notesObject.notes.color.splice(selectedNoteIndex, 1);
       window.sessionStorage.setItem("notesObject", JSON.stringify(notesObject));
       closeClicked("noteForm"); // close the form after that
+      //window.sessionStorage.removeItem("updateDraft"); // this is done because it is a default behaviour of close clicked to create a draft in session storage
     } else {
       console.log("deletion rejected");
       setTimeout(() => createAlert("Note deletion rejected", "message"), 400);
@@ -314,3 +337,52 @@ function formReset() {
   }
 }
 // 265 is the maximum number of characters that should be visible in a note card.
+
+function editNote() {
+  let noteFormElem = document.querySelector("#noteForm");
+  if (selectedNote == undefined) {
+    createAlert("Please selecte a note to  edit", "error");
+  } else {
+    noteFormElem.querySelector("h2").style.display = "initial";
+    noteFormElem.querySelector("h2").innerText = "Edit Note"; // these 3 need to be done because these styles were removed when note is selected
+    noteFormElem.querySelector("#update").style.display = "flex";
+    noteFormElem.querySelector("#publish").style.display = "none";
+    noteFormElem.querySelector("input").removeAttribute("disabled");
+    noteFormElem.querySelector("textArea").removeAttribute("disabled");
+  }
+}
+
+function updateNote() {
+  console.log("Your note has been updated");
+  createAlert("Note successfully added", "success");
+  let updateDraft = JSON.parse(window.sessionStorage.getItem("updateDraft"));
+
+  let title = updateDraft.title;
+  let description = updateDraft.description;
+  let dateTime = String(new Date()).substring(4, 23);
+  let augmentedDescription =
+    description.length > 192
+      ? description.substring(0, 192) + ".....<b>see more</b>"
+      : description; // if the description overflows the card then show ellipses
+  let notedata = ` <p class="heading">${title}</p>
+  <p class="description">
+    ${augmentedDescription}
+  </p><p class="noteDate">${dateTime}</p>`;
+
+  document
+    .querySelectorAll(".note")
+    [selectedNoteIndex + 1].querySelector(".data").innerHTML = notedata;
+  // set the values in the session storage for now
+  notesObject.notes.title[selectedNoteIndex] = title;
+  notesObject.notes.description[selectedNoteIndex] = description;
+  notesObject.notes.color[selectedNoteIndex] = selectedColor;
+  notesObject.notes.dateTime[selectedNoteIndex] = dateTime;
+  window.sessionStorage.setItem("notesObject", JSON.stringify(notesObject));
+  // reset the form after the note has been published;
+  formReset();
+  //close the form
+  closeClicked("noteForm");
+  //remove the updateDraft
+  window.sessionStorage.removeItem("updateDraft"); // also this statement has been put here because when the close button on the form is clicked then it creates the draft
+  // so this statement removes it nevertheless.
+}

@@ -275,24 +275,27 @@ a {
     gap: 20px;
   }
 
-  form #publish {
+  form #publish,
+  form #update {
     width: 90%;
     height: 50px;
     border: 2px solid white;
     border-radius: 15px;
     color: white;
     padding-left: 15px;
-    display: flex;
+    display: none;
     justify-content: center;
     align-items: center;
     transform: scale(1);
     transition: 0.2s;
     cursor: pointer;
   }
-  form #publish:active {
+  form #publish:active,
+  form #update:active {
     transform: scale(0.95);
   }
-  form #publish #publishButton {
+  form #publish #publishButton,
+  form #update #updateButton {
     font-size: 1em;
     background: transparent;
     color: white;

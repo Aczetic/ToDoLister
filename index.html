@@ -61,8 +61,8 @@ overflowing in the child but if again with content overflow:hidden is used then 
             add
           </div>
           <div class="material-symbols-outlined" onclick="deleteNote()">delete</div>
-          <div class="material-symbols-outlined" >edit</div>
-          <div class="material-symbols-outlined" onClick="formReset()">
+          <div class="material-symbols-outlined" onclick = 'editNote()'>edit</div>
+          <div class="material-symbols-outlined" onclick="formReset()">
             restart_alt
           </div>
         </div>
@@ -122,6 +122,12 @@ overflowing in the child but if again with content overflow:hidden is used then 
               publish
             </div>
             <div id="publishButton">PUBLISH</div>
+          </div>
+          <div id="update" onclick="updateNote(event)">
+            <div class="material-symbols-outlined" style="font-size: 1.1em">
+              update
+            </div>
+            <div id="updateButton">UPDATE</div>
           </div>
         </form>
       </div>
