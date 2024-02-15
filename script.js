@@ -363,7 +363,7 @@ function editNote() {
 
 function updateNote() {
   console.log("Your note has been updated");
-  createAlert("Note successfully added", "success");
+  createAlert("Note successfully updated", "success");
   let updateDraft = JSON.parse(window.sessionStorage.getItem("updateDraft"));
 
   let title = updateDraft.title;
@@ -381,12 +381,19 @@ function updateNote() {
   document
     .querySelectorAll(".note")
     [selectedNoteIndex + 1].querySelector(".data").innerHTML = notedata;
+
   // set the values in the session storage for now
   notesObject.notes.title[selectedNoteIndex] = title;
   notesObject.notes.description[selectedNoteIndex] = description;
   notesObject.notes.color[selectedNoteIndex] = selectedColor;
   notesObject.notes.dateTime[selectedNoteIndex] = dateTime;
   window.sessionStorage.setItem("notesObject", JSON.stringify(notesObject));
+  document
+    .querySelectorAll(".note")
+    [selectedNoteIndex + 1].setAttribute(
+      "class",
+      `note ${notesObject.notes.color[selectedNoteIndex]}`
+    );
   // reset the form after the note has been published;
   formReset();
   //close the form
