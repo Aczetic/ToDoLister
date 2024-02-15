@@ -18,6 +18,7 @@ let notesObject = {
   selectedNoteIndex = -1; // to store the index of the selected note
 (selectedColor = undefined), // to store the current selected color
   (alertBoxAnswer = undefined),
+  (isFormEnabled = false),
   (backgroundColors = {
     red: "rgba(255, 0, 0, 0.5)",
     orange: "rgba(252, 156, 13, 0.2)",
@@ -46,6 +47,8 @@ document.addEventListener("DOMContentLoaded", () => {
 let isNoteCreateDialogueBoxOpen = false;
 
 function closeClicked(id) {
+  // set the isFormEnabled flag to false
+  isFormEnabled = false;
   let elem = document.getElementById(id);
   elem.style.transform = "scale(0)";
   // some default actions
@@ -146,9 +149,10 @@ function createAlert(message, messageType) {
 }
 
 function createNote() {
-  // bring the dialogue box up
+  // bring the form box up and set the form enabled flag to true
   let noteFormElem = document.querySelector("#noteForm");
   noteFormElem.style.transform = "scale(1)";
+  isFormEnabled = true;
 
   // set the heading text
   noteFormElem.querySelector("h2").style.display = "initial";
@@ -185,14 +189,16 @@ function createNote() {
 }
 
 function setColor(elem) {
-  // set the color of the form only when a note has not been selected
+  // set the color of the form only when a note has not been selected and  when #noteForm's transform === 'scale(1)'
   selectedColor = elem.getAttribute("class");
-  if (selectedColor.indexOf("tiles") !== -1) {
+  if (isFormEnabled === true) {
     selectedColor = selectedColor.substr(
       selectedColor.indexOf("tiles") + "tiles".length + 1
     );
   } else {
-    selectedColor = elem.getAttribute("class").substring(5);
+    //selectedColor = elem.getAttribute("class").substring(5);
+    createAlert("invalid action", "error");
+    console.log("enterd in else block of set color");
   }
   document.querySelector("#noteForm").style.backgroundColor =
     backgroundColors[selectedColor];
@@ -289,7 +295,8 @@ function selectNote(event) {
   noteFormElem.querySelector("textArea").setAttribute("disabled", "disabled");
   noteFormElem.querySelector("#publish").style.display = "none";
   noteFormElem.querySelector("#update").style.display = "none";
-  setColor(selectedNote.parentNode);
+  noteFormElem.style.backgroundColor =
+    backgroundColors[notesObject.notes.color[selectedNoteIndex]];
 }
 
 function deleteNote() {
@@ -339,6 +346,8 @@ function formReset() {
 // 265 is the maximum number of characters that should be visible in a note card.
 
 function editNote() {
+  // set the isFormEnabled flag to true
+  isFormEnabled = true;
   let noteFormElem = document.querySelector("#noteForm");
   if (selectedNote == undefined) {
     createAlert("Please selecte a note to  edit", "error");

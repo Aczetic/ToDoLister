@@ -247,7 +247,7 @@ a {
   height: 600px;
   width: 80%;
   border: 2px solid white;
-  backdrop-filter: blur(20px);
+  backdrop-filter: blur(80px);
   background-color: rgba(0, 0, 0, 0.2);
   z-index: 10;
   border-radius: 20px;
