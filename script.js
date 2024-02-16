@@ -52,6 +52,8 @@ function closeClicked(id) {
   let elem = document.getElementById(id);
   elem.style.transform = "scale(0)";
   // some default actions
+
+  // some actions that needed to be done
   if (selectedNote != undefined) {
     let title = elem.querySelector("#title").value;
     let description = elem.querySelector("#noteData").value;
@@ -162,7 +164,7 @@ function createNote() {
   noteFormElem.querySelector("input").removeAttribute("disabled");
   noteFormElem.querySelector("textArea").removeAttribute("disabled");
 
-  // if there is any data in draft then set it in form already to show the earlier work instead of destroying it
+  // if there is already any data in the draft then set it in form to show the earlier work instead of destroying it
   let draft = JSON.parse(window.sessionStorage.getItem("draft"));
   if (draft != null) {
     // if the draft exists then get any available data from it
@@ -197,7 +199,7 @@ function setColor(elem) {
     );
   } else {
     //selectedColor = elem.getAttribute("class").substring(5);
-    createAlert("invalid action", "error");
+    createAlert("invalid action2", "error");
     console.log("enterd in else block of set color");
   }
   document.querySelector("#noteForm").style.backgroundColor =
@@ -261,14 +263,14 @@ function publishNote() {
   notesObject.notes.color.push(selectedColor);
   notesObject.notes.dateTime.push(dateTime);
   window.sessionStorage.setItem("notesObject", JSON.stringify(notesObject));
-  // also clear the draft which was only to help publish the note
-  window.sessionStorage.removeItem("draft");
 
   createAlert("Note successfully added", "success");
-  // reset the form after the note has been published;
-  formReset();
   //close the form
   closeClicked("noteForm");
+  // also clear the draft which was only to help publish the note
+  window.sessionStorage.removeItem("draft");
+  // reset the form after the note has been published;
+  formReset();
 }
 
 function selectNote(event) {
@@ -338,9 +340,8 @@ function formReset() {
     formElem.querySelector("form").reset();
     formElem.style.backgroundColor = "rgba(0, 0, 0, 0.2)";
     selectedColor = undefined;
-    window.sessionStorage.removeItem("draft");
   } else {
-    createAlert("Invalid action", "error");
+    createAlert("Invalid action1", "error");
   }
 }
 // 265 is the maximum number of characters that should be visible in a note card.
@@ -350,6 +351,7 @@ function editNote() {
   isFormEnabled = true;
   let noteFormElem = document.querySelector("#noteForm");
   if (selectedNote == undefined) {
+    // if no note is selected then show alert
     createAlert("Please selecte a note to  edit", "error");
   } else {
     noteFormElem.querySelector("h2").style.display = "initial";
@@ -358,17 +360,51 @@ function editNote() {
     noteFormElem.querySelector("#publish").style.display = "none";
     noteFormElem.querySelector("input").removeAttribute("disabled");
     noteFormElem.querySelector("textArea").removeAttribute("disabled");
+
+    // if there is already any data in the draft then set it in form to show the earlier work instead of destroying it
+    let updateDraft = JSON.parse(window.sessionStorage.getItem("updateDraft"));
+    if (updateDraft != null) {
+      // if the draft exists then get any available data from it
+
+      if (Boolean(updateDraft.title)) {
+        noteFormElem.querySelector("#title").value = updateDraft.title;
+      }
+      if (Boolean(updateDraft.description)) {
+        noteFormElem.querySelector("#noteData").value = updateDraft.description;
+      }
+      if (Boolean(updateDraft.backgroundColor)) {
+        noteFormElem.style.backgroundColor =
+          backgroundColors[updateDraft.backgroundColor];
+
+        selectedColor = updateDraft.backgroundColor;
+      }
+    }
   }
 }
 
 function updateNote() {
   console.log("Your note has been updated");
   createAlert("Note successfully updated", "success");
-  let updateDraft = JSON.parse(window.sessionStorage.getItem("updateDraft"));
 
-  let title = updateDraft.title;
-  let description = updateDraft.description;
+  // check if the inputs are not empty if empty then alert and let the dialogue box open
+  //getTime of creation
   let dateTime = String(new Date()).substring(4, 23);
+  // get title info
+  let title = document.querySelector("#noteForm").querySelector("#title").value;
+  // get note data
+  let description = document
+    .querySelector("#noteForm")
+    .querySelector("#noteData").value;
+  //error checking
+  if (Boolean(title) === false) {
+    createAlert("Title is empty!", "error");
+    return;
+  } else if (Boolean(description) === false) {
+    createAlert("Description is empty!", "error");
+    return;
+  }
+
+  let updateDraft = JSON.parse(window.sessionStorage.getItem("updateDraft"));
   let augmentedDescription =
     description.length > 192
       ? description.substring(0, 192) + ".....<b>see more</b>"
@@ -394,11 +430,11 @@ function updateNote() {
       "class",
       `note ${notesObject.notes.color[selectedNoteIndex]}`
     );
-  // reset the form after the note has been published;
-  formReset();
   //close the form
   closeClicked("noteForm");
-  //remove the updateDraft
+
+  // reset the form after the note has been published;
+  formReset();
   window.sessionStorage.removeItem("updateDraft"); // also this statement has been put here because when the close button on the form is clicked then it creates the draft
   // so this statement removes it nevertheless.
 }
