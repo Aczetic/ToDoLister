@@ -49,22 +49,22 @@ document.addEventListener("DOMContentLoaded", () => {
 let isNoteCreateDialogueBoxOpen = false;
 
 function closeClicked(id) {
-  let elem = document.getElementById(id);
-  elem.style.transform = "scale(0)";
-  // some default actions
+  let elem = document.getElementById(id); // get the form
 
   // some actions that needed to be done
   if (selectedNote != undefined) {
-    document.querySelector("form").reset(); // reset the form if the selectNote option was the last action;
-    selectedNote = undefined;
-    selectedNoteIndex = -1;
     if (isFormEnabled === true) {
       // if the form was enabled and a note was selected that means it was being edited
       createAlert(
-        "repace this alert with confirmation asking save the changes are not",
-        "message"
+        "Do you want to save the changes?",
+        "confirmation",
+        updateNote
       );
+      return; // to prevent the note from closing.
     }
+    document.querySelector("form").reset(); // reset the form if the selectNote option was the last action;
+    selectedNote = undefined;
+    selectedNoteIndex = -1;
   } else {
     let title = elem.querySelector("#title").value;
     let description = elem.querySelector("#noteData").value;
@@ -82,10 +82,11 @@ function closeClicked(id) {
   }
   // set the isFormEnabled flag to false
   isFormEnabled = false;
+  elem.style.transform = "scale(0)";
 }
 setAlertBoxToOriginalPosition = undefined; // this variable holdes the reference to the setTimeout function
 // USE : the setTimeout invokes after 2 seconds but when another alert is created the previous one should be cleared
-function createAlert(message, messageType) {
+function createAlert(message, messageType, callback = undefined) {
   // clear the previous call of setTimeout
 
   if (Boolean(setAlertBoxToOriginalPosition))
@@ -125,7 +126,7 @@ function createAlert(message, messageType) {
       .querySelector("#alertBoxOptions")
       .querySelectorAll("div")[0]
       .addEventListener("click", () => {
-        (alertBoxAnswer = true), deleteNote();
+        (alertBoxAnswer = true), callback();
         document.querySelector("#controlBlocker").style.display = "none";
         // put the alert box back to its original position
         alertElem.style.top = "-100px";
@@ -136,7 +137,7 @@ function createAlert(message, messageType) {
       .querySelectorAll("div")[1]
       .addEventListener("click", () => {
         alertBoxAnswer = false;
-        deleteNote();
+        callback();
         document.querySelector("#controlBlocker").style.display = "none";
         // put the alert box back to its original position
         alertElem.style.top = "-100px";
@@ -304,32 +305,36 @@ function selectNote(event) {
 function deleteNote() {
   if (selectedNote == undefined) {
     createAlert("Please select a note to delete", "error");
-  } else {
-    let confirmedToDelete = alertBoxAnswer;
-    if (confirmedToDelete == undefined) {
-      createAlert("Are you sure you want to delete this note?", "confirmation");
-    } else if (confirmedToDelete) {
-      console.log("deleted");
-      let elem = document
-        .querySelector("#notesBody")
-        .querySelector("#notes")
-        .querySelectorAll(".note")[selectedNoteIndex + 1];
+    return;
+  }
+  let confirmedToDelete = alertBoxAnswer;
+  if (confirmedToDelete == undefined) {
+    createAlert(
+      "Are you sure you want to delete this note?",
+      "confirmation",
+      deleteNote
+    );
+  } else if (confirmedToDelete) {
+    console.log("deleted");
+    let elem = document
+      .querySelector("#notesBody")
+      .querySelector("#notes")
+      .querySelectorAll(".note")[selectedNoteIndex + 1];
 
-      document.getElementById("notes").removeChild(elem);
-      setTimeout(() => createAlert("Note deleted", "success"), 400);
-      // clearing the session storage
-      notesObject.notes.title.splice(selectedNoteIndex, 1);
-      notesObject.notes.description.splice(selectedNoteIndex, 1);
-      notesObject.notes.dateTime.splice(selectedNoteIndex, 1);
-      notesObject.notes.color.splice(selectedNoteIndex, 1);
-      window.sessionStorage.setItem("notesObject", JSON.stringify(notesObject));
-      closeClicked("noteForm"); // close the form after that
-      //window.sessionStorage.removeItem("updateDraft"); // this is done because it is a default behaviour of close clicked to create a draft in session storage
-    } else {
-      console.log("deletion rejected");
-      setTimeout(() => createAlert("Note deletion rejected", "message"), 400);
-    }
-    alertBoxAnswer = undefined;
+    document.getElementById("notes").removeChild(elem);
+    setTimeout(() => createAlert("Note deleted", "success"), 400);
+    // clearing the session storage
+    notesObject.notes.title.splice(selectedNoteIndex, 1);
+    notesObject.notes.description.splice(selectedNoteIndex, 1);
+    notesObject.notes.dateTime.splice(selectedNoteIndex, 1);
+    notesObject.notes.color.splice(selectedNoteIndex, 1);
+    window.sessionStorage.setItem("notesObject", JSON.stringify(notesObject));
+    closeClicked("noteForm"); // close the form after that
+    alertBoxAnswer = undefined; // reset the value when true
+  } else {
+    console.log("deletion rejected");
+    setTimeout(() => createAlert("Note deletion rejected", "message"), 400);
+    alertBoxAnswer = undefined; // reset the value when false;
   }
 }
 
@@ -363,10 +368,16 @@ function editNote() {
   }
 }
 
-function updateNote() {
-  console.log("Your note has been updated");
-  createAlert("Note successfully updated", "success");
+function byPassClosingForUpdateFunction() {
+  document.querySelector("form").reset(); // reset the form if the selectNote option was the last action;
+  selectedNote = undefined;
+  selectedNoteIndex = -1;
+  // set the isFormEnabled flag to false
+  isFormEnabled = false;
+  document.querySelector("#noteForm").style.transform = "scale(0)";
+}
 
+function updateNote() {
   // check if the inputs are not empty if empty then alert and let the dialogue box open
   //getTime of creation
   let dateTime = String(new Date()).substring(4, 23);
@@ -384,40 +395,62 @@ function updateNote() {
     createAlert("Description is empty!", "error");
     return;
   }
+  let confirmToUpdate = alertBoxAnswer;
+  if (confirmToUpdate == undefined) {
+    createAlert("Do you want to save the changes?", "confirmation", updateNote);
+    confirmToUpdate = alertBoxAnswer;
+  } else {
+    if (confirmToUpdate) {
+      let augmentedDescription =
+        description.length > 192
+          ? description.substring(0, 192) + ".....<b>see more</b>"
+          : description; // if the description overflows the card then show ellipses
+      let markUp = ` <p class="heading">${title}</p>
+    <p class="description">
+      ${augmentedDescription}
+    </p><p class = 'editedTextLabel'><b>Edited</b></p><p class="noteDate">${dateTime}</p>`;
 
-  let augmentedDescription =
-    description.length > 192
-      ? description.substring(0, 192) + ".....<b>see more</b>"
-      : description; // if the description overflows the card then show ellipses
-  let markUp = ` <p class="heading">${title}</p>
-  <p class="description">
-    ${augmentedDescription}
-  </p><p class = 'editedTextLabel'><b>Edited</b></p><p class="noteDate">${dateTime}</p>`;
+      document
+        .querySelectorAll(".note")
+        [selectedNoteIndex + 1].querySelector(".data").innerHTML = markUp;
 
-  document
-    .querySelectorAll(".note")
-    [selectedNoteIndex + 1].querySelector(".data").innerHTML = markUp;
+      // set the values in the session storage for now
+      notesObject.notes.title[selectedNoteIndex] = title;
+      notesObject.notes.description[selectedNoteIndex] = description;
+      notesObject.notes.color[selectedNoteIndex] = Boolean(selectedColor)
+        ? selectedColor
+        : notesObject.notes.color[selectedNoteIndex];
+      notesObject.notes.dateTime[selectedNoteIndex] = dateTime;
+      notesObject.notes.markUp[selectedNoteIndex] = markUp;
+      window.sessionStorage.setItem("notesObject", JSON.stringify(notesObject));
+      document
+        .querySelectorAll(".note")
+        [selectedNoteIndex + 1].setAttribute(
+          "class",
+          `note ${notesObject.notes.color[selectedNoteIndex]}`
+        );
+      //close the form
+      //closeClicked("noteForm"); not using this and doing below upto line 426 because the close clicked will call the save changes too on note close during edit mode
+      byPassClosingForUpdateFunction();
 
-  // set the values in the session storage for now
-  notesObject.notes.title[selectedNoteIndex] = title;
-  notesObject.notes.description[selectedNoteIndex] = description;
-  notesObject.notes.color[selectedNoteIndex] = Boolean(selectedColor)
-    ? selectedColor
-    : notesObject.notes.color[selectedNoteIndex];
-  notesObject.notes.dateTime[selectedNoteIndex] = dateTime;
-  notesObject.notes.markUp[selectedNoteIndex] = markUp;
-  window.sessionStorage.setItem("notesObject", JSON.stringify(notesObject));
-  document
-    .querySelectorAll(".note")
-    [selectedNoteIndex + 1].setAttribute(
-      "class",
-      `note ${notesObject.notes.color[selectedNoteIndex]}`
-    );
-  //close the form
-  closeClicked("noteForm");
+      // reset the form after the note has been published;
+      formReset();
+      // window.sessionStorage.removeItem("updateDraft"); // also this statement has been put here because when the close button on the form is clicked then it creates the draft
+      // so this statement removes it nevertheless.
+      alertBoxAnswer = undefined; // reset the value if true;
+      console.log("Your note has been updated");
+      setTimeout(
+        () => createAlert("Note successfully updated", "success"),
+        400
+      );
+    } else {
+      setTimeout(() => createAlert("Changes not saved", "warning"), 400);
+      //close the form
+      byPassClosingForUpdateFunction();
 
-  // reset the form after the note has been published;
-  formReset();
-  // window.sessionStorage.removeItem("updateDraft"); // also this statement has been put here because when the close button on the form is clicked then it creates the draft
-  // so this statement removes it nevertheless.
+      // reset the form after the note has been published;
+      formReset();
+      alertBoxAnswer = undefined; // reset the value if false;
+    }
+  }
 }
