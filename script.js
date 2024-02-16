@@ -12,6 +12,7 @@ let notesObject = {
       description: [],
       color: [],
       dateTime: [],
+      markUp: [],
     },
   },
   selectedNote = undefined, // to store the selected note either for editing or deleting.
@@ -38,7 +39,8 @@ document.addEventListener("DOMContentLoaded", () => {
         notesObject.notes.title[i],
         notesObject.notes.description[i],
         notesObject.notes.color[i],
-        notesObject.notes.dateTime[i]
+        notesObject.notes.dateTime[i],
+        notesObject.notes.markUp[i]
       );
     }
   }
@@ -205,23 +207,16 @@ function setColor(elem) {
   //  createAlert("Invalid action", "error");
 }
 
-function addNoteToHTML(title, description, color, dateTime) {
-  //this function creates the note cards and appends them in html document
-  let augmentedDescription =
-    description.length > 192
-      ? description.substring(0, 192) + ".....<b>see more</b>"
-      : description; // if the description overflows the card then show ellipses
+function addNoteToHTML(title, description, color, dateTime, markUp) {
+  //this function appends the notes in html document
+
   let newNote = document.createElement("div");
   newNote.setAttribute("class", `note ${color}`); // set the color of card
   newNote.addEventListener("click", selectNote);
   newNote.appendChild(document.createElement("div"));
   let data = newNote.querySelector("div");
   data.setAttribute("class", "data");
-  let notedata = ` <p class="heading">${title}</p>
-  <p class="description">
-    ${augmentedDescription}
-  </p><p class="noteDate">${dateTime}</p>`;
-  data.innerHTML = notedata;
+  data.innerHTML = markUp;
   document
     .querySelector("#notes")
     .insertBefore(newNote, document.querySelector(".add"));
@@ -250,14 +245,23 @@ function publishNote() {
   }
 
   //create the html for the note card
-
-  addNoteToHTML(title, description, selectedColor, dateTime);
+  let augmentedDescription =
+    description.length > 192
+      ? description.substring(0, 192) + ".....<b>see more</b>"
+      : description; // if the description overflows the card then show ellipses
+  let markUp = ` <p class="heading">${title}</p>
+  <p class="description">
+    ${augmentedDescription}
+  </p><p class="noteDate">${dateTime}</p>`;
+  // add it in dom
+  addNoteToHTML(title, description, selectedColor, dateTime, markUp);
 
   // set the values in the session storage for now
   notesObject.notes.title.push(title);
   notesObject.notes.description.push(description);
   notesObject.notes.color.push(selectedColor);
   notesObject.notes.dateTime.push(dateTime);
+  notesObject.notes.markUp.push(markUp);
   window.sessionStorage.setItem("notesObject", JSON.stringify(notesObject));
 
   createAlert("Note successfully added", "success");
@@ -385,14 +389,14 @@ function updateNote() {
     description.length > 192
       ? description.substring(0, 192) + ".....<b>see more</b>"
       : description; // if the description overflows the card then show ellipses
-  let notedata = ` <p class="heading">${title}</p>
+  let markUp = ` <p class="heading">${title}</p>
   <p class="description">
     ${augmentedDescription}
   </p><p class = 'editedTextLabel'><b>Edited</b></p><p class="noteDate">${dateTime}</p>`;
 
   document
     .querySelectorAll(".note")
-    [selectedNoteIndex + 1].querySelector(".data").innerHTML = notedata;
+    [selectedNoteIndex + 1].querySelector(".data").innerHTML = markUp;
 
   // set the values in the session storage for now
   notesObject.notes.title[selectedNoteIndex] = title;
@@ -401,6 +405,7 @@ function updateNote() {
     ? selectedColor
     : notesObject.notes.color[selectedNoteIndex];
   notesObject.notes.dateTime[selectedNoteIndex] = dateTime;
+  notesObject.notes.markUp[selectedNoteIndex] = markUp;
   window.sessionStorage.setItem("notesObject", JSON.stringify(notesObject));
   document
     .querySelectorAll(".note")
