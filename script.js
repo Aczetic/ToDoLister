@@ -195,7 +195,7 @@ function setColor(elem) {
     );
   } else {
     //selectedColor = elem.getAttribute("class").substring(5);
-    createAlert("invalid action2", "error");
+    createAlert("Invalid action", "error");
     console.log("enterd in else block of set color");
   }
   document.querySelector("#noteForm").style.backgroundColor =
@@ -337,7 +337,7 @@ function formReset() {
     formElem.style.backgroundColor = "rgba(0, 0, 0, 0.2)";
     selectedColor = undefined;
   } else {
-    createAlert("Invalid action1", "error");
+    createAlert("Invalid action", "error");
   }
 }
 // 265 is the maximum number of characters that should be visible in a note card.
