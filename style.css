@@ -277,12 +277,12 @@ a {
 
   form #publish,
   form #update {
-    width: 90%;
+    width: fit-content;
     height: 50px;
     border: 2px solid white;
     border-radius: 15px;
     color: white;
-    padding-left: 15px;
+    padding: 10px 30px;
     display: none;
     justify-content: center;
     align-items: center;

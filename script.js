@@ -47,31 +47,22 @@ document.addEventListener("DOMContentLoaded", () => {
 let isNoteCreateDialogueBoxOpen = false;
 
 function closeClicked(id) {
-  // set the isFormEnabled flag to false
-  isFormEnabled = false;
   let elem = document.getElementById(id);
   elem.style.transform = "scale(0)";
   // some default actions
 
   // some actions that needed to be done
   if (selectedNote != undefined) {
-    let title = elem.querySelector("#title").value;
-    let description = elem.querySelector("#noteData").value;
-    if (Boolean(title) || Boolean(description)) {
-      let backgroundColor = elem.style.backgroundColor;
-      let draft = {
-        title: title,
-        description: description,
-        selectedNoteIndex: selectedNoteIndex,
-        backgroundColor: Object.keys(backgroundColors).find(
-          (color) => backgroundColors[color] === backgroundColor
-        ),
-      };
-      window.sessionStorage.setItem("updateDraft", JSON.stringify(draft));
-    }
     document.querySelector("form").reset(); // reset the form if the selectNote option was the last action;
     selectedNote = undefined;
     selectedNoteIndex = -1;
+    if (isFormEnabled === true) {
+      // if the form was enabled and a note was selected that means it was being edited
+      createAlert(
+        "repace this alert with confirmation asking save the changes are not",
+        "message"
+      );
+    }
   } else {
     let title = elem.querySelector("#title").value;
     let description = elem.querySelector("#noteData").value;
@@ -87,6 +78,8 @@ function closeClicked(id) {
       window.sessionStorage.setItem("draft", JSON.stringify(draft));
     }
   }
+  // set the isFormEnabled flag to false
+  isFormEnabled = false;
 }
 setAlertBoxToOriginalPosition = undefined; // this variable holdes the reference to the setTimeout function
 // USE : the setTimeout invokes after 2 seconds but when another alert is created the previous one should be cleared
@@ -151,6 +144,9 @@ function createAlert(message, messageType) {
 }
 
 function createNote() {
+  // some default actions so unselected any selected note
+  selectedNote = undefined;
+  selectedNoteIndex = -1;
   // bring the form box up and set the form enabled flag to true
   let noteFormElem = document.querySelector("#noteForm");
   noteFormElem.style.transform = "scale(1)";
@@ -335,7 +331,7 @@ function deleteNote() {
 
 function formReset() {
   if (selectedNote == undefined) {
-    // reset the note only when there is no note selected
+    // reset the form only when there is no note selected
     let formElem = document.querySelector("#noteForm");
     formElem.querySelector("form").reset();
     formElem.style.backgroundColor = "rgba(0, 0, 0, 0.2)";
@@ -360,25 +356,6 @@ function editNote() {
     noteFormElem.querySelector("#publish").style.display = "none";
     noteFormElem.querySelector("input").removeAttribute("disabled");
     noteFormElem.querySelector("textArea").removeAttribute("disabled");
-
-    // if there is already any data in the draft then set it in form to show the earlier work instead of destroying it
-    let updateDraft = JSON.parse(window.sessionStorage.getItem("updateDraft"));
-    if (updateDraft != null) {
-      // if the draft exists then get any available data from it
-
-      if (Boolean(updateDraft.title)) {
-        noteFormElem.querySelector("#title").value = updateDraft.title;
-      }
-      if (Boolean(updateDraft.description)) {
-        noteFormElem.querySelector("#noteData").value = updateDraft.description;
-      }
-      if (Boolean(updateDraft.backgroundColor)) {
-        noteFormElem.style.backgroundColor =
-          backgroundColors[updateDraft.backgroundColor];
-
-        selectedColor = updateDraft.backgroundColor;
-      }
-    }
   }
 }
 
@@ -404,7 +381,6 @@ function updateNote() {
     return;
   }
 
-  let updateDraft = JSON.parse(window.sessionStorage.getItem("updateDraft"));
   let augmentedDescription =
     description.length > 192
       ? description.substring(0, 192) + ".....<b>see more</b>"
@@ -421,7 +397,9 @@ function updateNote() {
   // set the values in the session storage for now
   notesObject.notes.title[selectedNoteIndex] = title;
   notesObject.notes.description[selectedNoteIndex] = description;
-  notesObject.notes.color[selectedNoteIndex] = selectedColor;
+  notesObject.notes.color[selectedNoteIndex] = Boolean(selectedColor)
+    ? selectedColor
+    : notesObject.notes.color[selectedNoteIndex];
   notesObject.notes.dateTime[selectedNoteIndex] = dateTime;
   window.sessionStorage.setItem("notesObject", JSON.stringify(notesObject));
   document
@@ -435,6 +413,6 @@ function updateNote() {
 
   // reset the form after the note has been published;
   formReset();
-  window.sessionStorage.removeItem("updateDraft"); // also this statement has been put here because when the close button on the form is clicked then it creates the draft
+  // window.sessionStorage.removeItem("updateDraft"); // also this statement has been put here because when the close button on the form is clicked then it creates the draft
   // so this statement removes it nevertheless.
 }
