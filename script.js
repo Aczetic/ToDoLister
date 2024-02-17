@@ -329,7 +329,7 @@ function deleteNote() {
     notesObject.notes.dateTime.splice(selectedNoteIndex, 1);
     notesObject.notes.color.splice(selectedNoteIndex, 1);
     window.sessionStorage.setItem("notesObject", JSON.stringify(notesObject));
-    closeClicked("noteForm"); // close the form after that
+    byPassClosingForUpdateFunction(); // close the form after that
     alertBoxAnswer = undefined; // reset the value when true
   } else {
     console.log("deletion rejected");

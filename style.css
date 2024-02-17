@@ -233,7 +233,7 @@ a {
   box-sizing: border-box;
   width: 90%;
   height: 100%;
-  right: 0;
+  left: 80px;
   position: absolute;
   display: flex;
   flex-direction: column;
@@ -379,8 +379,12 @@ a {
 
 .note {
   cursor: pointer;
-  width: 250px;
-  height: 250px;
+  width: 20vw;
+  height: 18vw;
+  min-width: 200px;
+  min-height: 150px;
+  max-width: 250px;
+  max-height: 250px;
   border-radius: 10px;
   position: relative;
   display: flex;
